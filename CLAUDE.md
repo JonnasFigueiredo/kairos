@@ -43,7 +43,7 @@ Pacotes por camada em `src/main/java/br/com/kairos/`:
 - `business/`: regras de negócio. Lançam `BusinessException` com a mensagem que vai para a tela.
 - `dao/`: SQL com JDBC. Erro de banco vira `TechnicalException`.
 - `vo/`: objetos de dados, sem lógica.
-- `infra/`: classes base e enums (`Action`, `Periodo`).
+- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`).
 - `exception/`: `BusinessException`, `TechnicalException`.
 
 Fora do Java:
@@ -56,7 +56,7 @@ Fora do Java:
 ## Convenções
 
 - Fluxo sempre Action → Business → Dao. Action não tem regra nem SQL; Dao não tem regra; JSP não tem scriptlet.
-- Um módulo chama outro só pela classe Business.
+- Um módulo chama outro só pela classe Business. Exceção: dentro de uma `Transacao`, a Business usa o Dao do outro módulo, porque as gravações precisam da mesma conexão.
 - SQL só com `PreparedStatement` e parâmetros `?`. Nunca concatenar valor de tela.
 - `Connection`, `PreparedStatement` e `ResultSet` em `try-with-resources`.
 - Nunca engolir exceção (`printStackTrace` e seguir). Erro técnico sobe como `TechnicalException`.
