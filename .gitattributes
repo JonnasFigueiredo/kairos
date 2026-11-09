@@ -1,0 +1,12 @@
+# Fim de linha: o git decide por arquivo de texto, com exceções abaixo
+* text=auto
+
+# Scripts de shell precisam de LF mesmo no Windows
+mvnw text eol=lf
+*.sh text eol=lf
+
+# Scripts do Windows precisam de CRLF
+*.cmd text eol=crlf
+
+# SQL roda dentro do container Linux
+*.sql text eol=lf

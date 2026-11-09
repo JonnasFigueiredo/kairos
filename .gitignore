@@ -1,0 +1,28 @@
+# Build
+target/
+
+# Configuração local: senhas e portas desta máquina
+.env
+
+# Configuração pessoal do assistente (permissões desta máquina)
+.claude/settings.local.json
+
+# Enunciado da prova e arquivos de apoio: ficam fora do repositório
+*.pdf
+avaliacao/
+notas/
+rascunhos/
+
+# Eclipse
+.classpath
+.project
+.settings/
+
+# IntelliJ / VS Code
+.idea/
+*.iml
+.vscode/
+
+# Sistema
+Thumbs.db
+.DS_Store

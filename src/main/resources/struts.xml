@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.5//EN"
+    "http://struts.apache.org/dtds/struts-2.5.dtd">
+
+<struts>
+
+	<!-- Desligado: o modo de desenvolvimento expõe detalhes internos na tela -->
+	<constant name="struts.devMode" value="false" />
+	<!-- Tema "simple": as tags geram só o campo, sem tabela em volta. O layout é do Bootstrap -->
+	<constant name="struts.ui.theme" value="simple" />
+	<!-- Método da Action não pode ser escolhido pela URL (action!metodo) -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+	<!-- Arquivo com os textos das telas -->
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+	<constant name="struts.locale" value="pt_BR" />
+	<!-- O Struts não intercepta os arquivos do Bootstrap -->
+	<constant name="struts.action.excludePattern" value="/webjars/.*" />
+
+	<package name="kairos" extends="struts-default">
+
+		<!-- Sem classe: usa a Action padrão do Struts e só entrega o JSP -->
+		<action name="inicio">
+			<result>/inicio/inicio.jsp</result>
+		</action>
+
+	</package>
+
+</struts>
