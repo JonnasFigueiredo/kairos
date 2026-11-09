@@ -1,0 +1,35 @@
+<%-- Parte de cima de toda página: cabeçalho HTML, menu lateral e abertura do conteúdo.
+     Antes de incluir, a página define:
+       tituloPagina : texto do <title> e do título da tela
+       menuAtivo    : inicio, funcionarios, agendas, compromissos ou relatorio --%>
+<!DOCTYPE html>
+<html lang="pt-BR">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title><s:text name="app.nome"/> - <s:property value="#tituloPagina"/></title>
+		<link rel="stylesheet" href="<s:url value='/webjars/bootstrap/5.1.3/css/bootstrap.min.css'/>">
+		<link rel="stylesheet" href="<s:url value='/css/kairos.css'/>">
+	</head>
+	<body>
+		<div class="k-app">
+			<nav class="k-sidebar" aria-label="<s:text name='menu.rotulo'/>">
+				<div class="k-menu">
+					<a class="k-marca" href="<s:url action='inicio'/>">
+						<span class="k-logo" aria-hidden="true">K</span>
+						<s:text name="app.nome"/>
+					</a>
+
+					<a class="k-item <s:if test="#menuAtivo == 'inicio'">active</s:if>" href="<s:url action='inicio'/>">
+						<s:text name="menu.inicio"/>
+					</a>
+					<%-- Os itens abaixo viram links quando cada cadastro ficar pronto --%>
+					<span class="k-item k-item-inativo"><s:text name="menu.funcionarios"/></span>
+					<span class="k-item k-item-inativo"><s:text name="menu.agendas"/></span>
+					<span class="k-item k-item-inativo"><s:text name="menu.compromissos"/></span>
+					<span class="k-item k-item-inativo"><s:text name="menu.relatorio"/></span>
+				</div>
+			</nav>
+
+			<main class="k-conteudo">
+				<h1 class="k-titulo"><s:property value="#tituloPagina"/></h1>

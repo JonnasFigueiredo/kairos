@@ -1,0 +1,7 @@
+<%-- Parte de baixo de toda página: fecha o que o topo.jspf abriu e carrega o JavaScript do Bootstrap --%>
+			</main>
+		</div>
+
+		<script src="<s:url value='/webjars/bootstrap/5.1.3/js/bootstrap.bundle.min.js'/>"></script>
+	</body>
+</html>

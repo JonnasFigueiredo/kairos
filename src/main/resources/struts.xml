@@ -20,8 +20,26 @@
 
 	<package name="kairos" extends="struts-default">
 
-		<!-- Sem classe: usa a Action padrão do Struts e só entrega o JSP -->
-		<action name="inicio">
+		<!-- Pilha padrão do Struts, com um ajuste: toda exceção não tratada vai para o log -->
+		<interceptors>
+			<interceptor-stack name="pilhaKairos">
+				<interceptor-ref name="defaultStack">
+					<param name="exception.logEnabled">true</param>
+					<param name="exception.logLevel">ERROR</param>
+				</interceptor-ref>
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="pilhaKairos" />
+
+		<!-- Falha técnica em qualquer Action cai na página de erro, sem detalhe interno na tela -->
+		<global-results>
+			<result name="erroTecnico">/erro/erro.jsp</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping exception="br.com.kairos.exception.TechnicalException" result="erroTecnico" />
+		</global-exception-mappings>
+
+		<action name="inicio" class="br.com.kairos.action.InicioAction">
 			<result>/inicio/inicio.jsp</result>
 		</action>
 
