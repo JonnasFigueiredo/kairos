@@ -1,0 +1,12 @@
+<%-- Mensagens da Action: sucesso (addActionMessage) e erro (addActionError).
+     s:property escapa o HTML, então texto digitado pelo usuário nunca vira código na página. --%>
+<s:if test="hasActionMessages()">
+	<div class="alert alert-success" role="status">
+		<s:iterator value="actionMessages"><div><s:property/></div></s:iterator>
+	</div>
+</s:if>
+<s:if test="hasActionErrors()">
+	<div class="alert alert-danger" role="alert">
+		<s:iterator value="actionErrors"><div><s:property/></div></s:iterator>
+	</div>
+</s:if>

@@ -23,9 +23,15 @@
 		<!-- Pilha padrão do Struts, com um ajuste: toda exceção não tratada vai para o log -->
 		<interceptors>
 			<interceptor-stack name="pilhaKairos">
+				<!-- Guarda as mensagens na sessão durante um redirect e devolve na página seguinte -->
+				<interceptor-ref name="store">
+					<param name="operationMode">AUTOMATIC</param>
+				</interceptor-ref>
 				<interceptor-ref name="defaultStack">
 					<param name="exception.logEnabled">true</param>
 					<param name="exception.logLevel">ERROR</param>
+					<!-- A consulta nunca volta ao formulário: mensagem de erro trazida de um redirect aparece na própria consulta -->
+					<param name="workflow.excludeMethods">input,back,cancel,browse,listar</param>
 				</interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
@@ -41,6 +47,15 @@
 
 		<action name="inicio" class="br.com.kairos.action.InicioAction">
 			<result>/inicio/inicio.jsp</result>
+		</action>
+
+		<!-- {1} é o trecho da URL antes de "Funcionarios": listarFuncionarios.action chama o método listar -->
+		<action name="*Funcionarios" class="br.com.kairos.action.FuncionarioAction" method="{1}">
+			<result name="success">/funcionario/cadFuncionario_b.jsp</result>
+			<result name="input">/funcionario/cadFuncionario_i.jsp</result>
+			<result name="redirect" type="redirectAction">listarFuncionarios</result>
+			<!-- Só estes métodos podem ser chamados pela URL -->
+			<allowed-methods>listar,novo,editar,salvar,excluir</allowed-methods>
 		</action>
 
 	</package>

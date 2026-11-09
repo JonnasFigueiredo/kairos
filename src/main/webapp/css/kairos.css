@@ -52,3 +52,43 @@ a.k-item:hover { background: var(--k-hover); color: var(--k-texto); }
 	.k-marca { padding: 4px 10px; }
 	.k-conteudo { padding: 18px 16px; }
 }
+
+/* Painel: caixa que envolve a tabela de consulta e os formulários */
+.k-painel { background: var(--k-superficie); border: 1px solid var(--k-borda); border-radius: 14px; overflow: hidden; }
+.k-barra { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; padding: 16px; }
+.k-busca { display: flex; gap: 8px; flex: 1; max-width: 520px; }
+.k-formulario { padding: 20px; max-width: 560px; }
+
+/* Tabela */
+.k-tabela { --bs-table-bg: transparent; --bs-table-striped-bg: transparent; color: var(--k-texto); border-color: var(--k-borda); }
+.k-tabela th { color: var(--k-suave); font-weight: 500; font-size: 13px; text-transform: uppercase; letter-spacing: .03em; }
+.k-tabela th, .k-tabela td { padding: 12px 16px; vertical-align: middle; }
+.k-tabela tbody tr:hover { background: var(--k-hover); }
+.k-tabela tbody tr:last-child td { border-bottom: 0; }
+.k-col-codigo { width: 110px; }
+.k-vazio { color: var(--k-suave); text-align: center; padding: 28px 16px !important; }
+
+/* Campos de formulário no tema escuro */
+.form-control, .form-select { background-color: var(--k-fundo); border-color: var(--k-borda); color: var(--k-texto); }
+.form-control:focus, .form-select:focus { background-color: var(--k-fundo); color: var(--k-texto); border-color: var(--k-primaria); box-shadow: 0 0 0 .2rem rgba(168, 85, 255, .25); }
+.form-control::placeholder { color: var(--k-suave); }
+.form-control:disabled { background-color: var(--k-hover); color: var(--k-suave); }
+.form-label { color: var(--k-suave); font-size: 14px; }
+
+/* Botões de contorno: as cores padrão do Bootstrap ficam abaixo de 4,5:1 no fundo escuro */
+.btn-outline-secondary { color: var(--k-suave); border-color: var(--k-borda); }
+.btn-outline-secondary:hover { background: var(--k-hover); color: var(--k-texto); border-color: var(--k-borda); }
+.btn-outline-danger { color: #f87171; border-color: #7f1d1d; }
+.btn-outline-danger:hover { background: #7f1d1d; color: #fff; border-color: #7f1d1d; }
+
+/* Modal e avisos */
+.modal-content { background: var(--k-superficie); border: 1px solid var(--k-borda); color: var(--k-texto); }
+.modal-header, .modal-footer { border-color: var(--k-borda); }
+.alert-success { background: #0f2a1d; border-color: #14532d; color: #86efac; }
+.alert-danger { background: #2a1010; border-color: #7f1d1d; color: #fca5a5; }
+
+@media (max-width: 575.98px) {
+	.k-tabela th, .k-tabela td { padding: 10px 8px; }
+	.k-col-codigo { width: auto; }
+	.k-busca { max-width: none; flex-basis: 100%; }
+}
