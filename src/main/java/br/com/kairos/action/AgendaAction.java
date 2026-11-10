@@ -11,7 +11,7 @@ import br.com.kairos.infra.Periodo;
 import br.com.kairos.vo.AgendaVo;
 
 /**
- * Telas do cadastro de agendas.
+ * Telas do cadastro de agendas (RN-AG-01).
  */
 public class AgendaAction extends Action {
 
@@ -46,6 +46,9 @@ public class AgendaAction extends Action {
 	}
 
 	public String salvar() {
+		if (!requisicaoEhPost())
+			return REDIRECT;
+
 		try {
 			business.salvar(agendaVo);
 			addActionMessage(getText("agenda.salva"));
@@ -57,6 +60,9 @@ public class AgendaAction extends Action {
 	}
 
 	public String excluir() {
+		if (!requisicaoEhPost())
+			return REDIRECT;
+
 		try {
 			business.excluir(agendaVo.getCodigo());
 			addActionMessage(getText("agenda.excluida"));

@@ -30,8 +30,9 @@
 				<interceptor-ref name="defaultStack">
 					<param name="exception.logEnabled">true</param>
 					<param name="exception.logLevel">ERROR</param>
-					<!-- A consulta nunca volta ao formulário: mensagem de erro trazida de um redirect aparece na própria consulta -->
-					<param name="workflow.excludeMethods">input,back,cancel,browse,listar</param>
+					<!-- Estes métodos nunca voltam sozinhos ao formulário. Em "listar", o erro trazido de um redirect aparece na consulta;
+					     em "editar" e "excluir", código inválido na URL é tratado pela Action e volta à consulta -->
+					<param name="workflow.excludeMethods">input,back,cancel,browse,listar,editar,excluir</param>
 				</interceptor-ref>
 			</interceptor-stack>
 		</interceptors>
@@ -43,7 +44,17 @@
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="br.com.kairos.exception.TechnicalException" result="erroTecnico" />
+			<!-- Qualquer outro erro não previsto: mesma página, sem detalhe técnico na tela -->
+			<exception-mapping exception="java.lang.Exception" result="erroTecnico" />
 		</global-exception-mappings>
+
+		<!-- Páginas de erro do servidor (web.xml): sem classe, só entregam o JSP -->
+		<action name="erro">
+			<result>/erro/erro.jsp</result>
+		</action>
+		<action name="naoEncontrado">
+			<result>/erro/naoEncontrado.jsp</result>
+		</action>
 
 		<action name="inicio" class="br.com.kairos.action.InicioAction">
 			<result>/inicio/inicio.jsp</result>

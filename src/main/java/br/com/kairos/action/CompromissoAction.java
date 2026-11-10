@@ -3,6 +3,8 @@ package br.com.kairos.action;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.opensymphony.xwork2.Preparable;
+
 import br.com.kairos.business.AgendaBusiness;
 import br.com.kairos.business.CompromissoBusiness;
 import br.com.kairos.business.FuncionarioBusiness;
@@ -13,9 +15,14 @@ import br.com.kairos.vo.CompromissoVo;
 import br.com.kairos.vo.FuncionarioVo;
 
 /**
- * Telas do cadastro de compromissos.
+ * Telas do cadastro de compromissos (RN-CO-01).
+ *
+ * Implementa Preparable: antes de chamar "novo", "editar" ou "salvar", o Struts
+ * chama o método "prepare" de mesmo nome. É ali que as opções dos selects são
+ * carregadas, antes de qualquer página ser desenhada. Se o banco estiver fora
+ * do ar, o erro acontece ainda dentro da Action e cai na página de erro.
  */
-public class CompromissoAction extends Action {
+public class CompromissoAction extends Action implements Preparable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -29,6 +36,34 @@ public class CompromissoAction extends Action {
 	private List<CompromissoVo> compromissos = new ArrayList<>();
 	/** Compromisso do formulário (inclusão e alteração) e da exclusão. */
 	private CompromissoVo compromissoVo = new CompromissoVo();
+
+	/** Opções dos selects do formulário. */
+	private List<FuncionarioVo> funcionarios = new ArrayList<>();
+	private List<AgendaVo> agendas = new ArrayList<>();
+
+	/** Exigido pela interface. Nada é comum a todos os métodos. */
+	@Override
+	public void prepare() {
+		// de propósito vazio: consulta e exclusão não mostram o formulário
+	}
+
+	public void prepareNovo() {
+		carregarOpcoes();
+	}
+
+	public void prepareEditar() {
+		carregarOpcoes();
+	}
+
+	/** Também cobre o caso em que o Struts devolve o formulário por erro de conversão. */
+	public void prepareSalvar() {
+		carregarOpcoes();
+	}
+
+	private void carregarOpcoes() {
+		funcionarios = funcionarioBusiness.pesquisar(null);
+		agendas = agendaBusiness.pesquisar(null);
+	}
 
 	public String listar() {
 		compromissos = business.pesquisar(busca);
@@ -50,6 +85,9 @@ public class CompromissoAction extends Action {
 	}
 
 	public String salvar() {
+		if (!requisicaoEhPost())
+			return REDIRECT;
+
 		try {
 			business.salvar(compromissoVo);
 			addActionMessage(getText("compromisso.salvo"));
@@ -61,6 +99,9 @@ public class CompromissoAction extends Action {
 	}
 
 	public String excluir() {
+		if (!requisicaoEhPost())
+			return REDIRECT;
+
 		try {
 			business.excluir(compromissoVo.getCodigo());
 			addActionMessage(getText("compromisso.excluido"));
@@ -70,14 +111,12 @@ public class CompromissoAction extends Action {
 		return REDIRECT;
 	}
 
-	/** Opções do select de funcionário. Só é chamado quando o formulário é desenhado. */
 	public List<FuncionarioVo> getFuncionarios() {
-		return funcionarioBusiness.pesquisar(null);
+		return funcionarios;
 	}
 
-	/** Opções do select de agenda. */
 	public List<AgendaVo> getAgendas() {
-		return agendaBusiness.pesquisar(null);
+		return agendas;
 	}
 
 	public String getBusca() {

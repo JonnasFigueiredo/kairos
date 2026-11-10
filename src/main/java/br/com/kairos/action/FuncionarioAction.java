@@ -9,7 +9,7 @@ import br.com.kairos.infra.Action;
 import br.com.kairos.vo.FuncionarioVo;
 
 /**
- * Telas do cadastro de funcionários.
+ * Telas do cadastro de funcionários (RN-FU-01).
  *
  * O Struts cria um objeto desta classe a cada requisição, preenche os atributos
  * com os campos enviados pela tela (pelos setters) e chama um dos métodos abaixo.
@@ -52,6 +52,9 @@ public class FuncionarioAction extends Action {
 
 	/** Grava o formulário. Regra violada: volta ao formulário com a mensagem. */
 	public String salvar() {
+		if (!requisicaoEhPost())
+			return REDIRECT;
+
 		try {
 			business.salvar(funcionarioVo);
 			addActionMessage(getText("funcionario.salvo"));
@@ -63,6 +66,9 @@ public class FuncionarioAction extends Action {
 	}
 
 	public String excluir() {
+		if (!requisicaoEhPost())
+			return REDIRECT;
+
 		try {
 			business.excluir(funcionarioVo.getCodigo());
 			addActionMessage(getText("funcionario.excluido"));

@@ -18,12 +18,29 @@
 		<dispatcher>REQUEST</dispatcher>
 		<dispatcher>FORWARD</dispatcher>
 		<dispatcher>INCLUDE</dispatcher>
+		<!-- ERROR: as páginas de erro abaixo também passam pelo Struts -->
+		<dispatcher>ERROR</dispatcher>
 	</filter-mapping>
 
 	<!-- Página aberta quando a URL é só /kairos -->
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
+
+	<!-- Erros que acontecem fora das Actions (endereço inexistente, JSP aberto direto, falha na inicialização):
+	     o usuário vê uma página do sistema, e não a página técnica do servidor -->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/naoEncontrado.action</location>
+	</error-page>
+	<error-page>
+		<error-code>500</error-code>
+		<location>/erro.action</location>
+	</error-page>
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/erro.action</location>
+	</error-page>
 
 	<session-config>
 		<session-timeout>30</session-timeout>
