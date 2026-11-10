@@ -32,7 +32,7 @@ docker compose up -d            # com Podman: podman compose up -d
 
 Abra http://localhost:8080/kairos
 
-- Na primeira subida o MySQL cria as tabelas e alguns dados de exemplo. Pode levar um ou dois minutos; `docker compose ps` mostra `healthy` quando terminou.
+- Na primeira subida o MySQL cria as tabelas e alguns dados de exemplo. Pode levar de um a quatro minutos; `docker compose ps` mostra `healthy` quando terminou.
 - O `JAVA_HOME` precisa apontar para um JDK 8.
 - Porta 8080 ocupada: `./mvnw jetty:run -Dkairos.porta=8082`.
 - Banco, usuário e senha têm valores padrão de desenvolvimento. Para trocar, copie `.env.example` para `.env`.

@@ -15,6 +15,7 @@ docker compose down -v      # para e apaga o banco
 - Exige JDK 8 no `JAVA_HOME`. Maven vem pelo wrapper; não instalar à parte.
 - Configuração do banco em `.env` (copiar de `.env.example`). `.env` nunca vai para o git.
 - Sem `.env`, o compose usa valores padrão de desenvolvimento (banco, usuário e senha `kairos`).
+- A primeira subida do MySQL leva de 1 a 4 minutos. Esperar o `healthy`.
 - Os scripts de `db/` rodam só com o volume vazio. Mudou a estrutura: `docker compose down -v` e subir de novo.
 - Porta 8080 ocupada: `./mvnw jetty:run -Dkairos.porta=8082`.
 - `.properties`: o Java 8 lê em ISO-8859-1. Acento vai como escape Unicode; depois de editar, converter com `native2ascii -encoding UTF-8` (ferramenta do JDK 8).
