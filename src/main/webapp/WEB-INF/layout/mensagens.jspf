@@ -1,12 +1,17 @@
-<%-- Mensagens da Action: sucesso (addActionMessage) e erro (addActionError).
+<%-- Mensagens da Action: sucesso (addActionMessage), erro de regra (addActionError)
+     e erro de conversão de campo (ex.: letra onde o Struts esperava número).
      s:property escapa o HTML, então texto digitado pelo usuário nunca vira código na página. --%>
 <s:if test="hasActionMessages()">
 	<div class="alert alert-success" role="status">
 		<s:iterator value="actionMessages"><div><s:property/></div></s:iterator>
 	</div>
 </s:if>
-<s:if test="hasActionErrors()">
+<s:if test="hasActionErrors() || hasFieldErrors()">
 	<div class="alert alert-danger" role="alert">
 		<s:iterator value="actionErrors"><div><s:property/></div></s:iterator>
+		<%-- fieldErrors é um mapa: campo -> lista de mensagens --%>
+		<s:iterator value="fieldErrors">
+			<s:iterator value="value"><div><s:property/></div></s:iterator>
+		</s:iterator>
 	</div>
 </s:if>

@@ -58,6 +58,13 @@
 			<allowed-methods>listar,novo,editar,salvar,excluir</allowed-methods>
 		</action>
 
+		<action name="*Agendas" class="br.com.kairos.action.AgendaAction" method="{1}">
+			<result name="success">/agenda/cadAgenda_b.jsp</result>
+			<result name="input">/agenda/cadAgenda_i.jsp</result>
+			<result name="redirect" type="redirectAction">listarAgendas</result>
+			<allowed-methods>listar,novo,editar,salvar,excluir</allowed-methods>
+		</action>
+
 	</package>
 
 </struts>
