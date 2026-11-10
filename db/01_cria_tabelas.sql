@@ -33,3 +33,14 @@ CREATE TABLE compromisso (
     -- Acelera o relatório por período (RN-RE-01)
     INDEX ix_compromisso_data (dt_compromisso)
 );
+
+-- RN-AC-03: ds_senha guarda o resultado do PBKDF2 com sal, nunca a senha.
+-- O login é único; a comparação não diferencia maiúsculas de minúsculas (collation do banco).
+CREATE TABLE usuario (
+    cd_usuario BIGINT       NOT NULL AUTO_INCREMENT,
+    ds_login   VARCHAR(60)  NOT NULL,
+    nm_usuario VARCHAR(255) NOT NULL,
+    ds_senha   VARCHAR(255) NOT NULL,
+    PRIMARY KEY (cd_usuario),
+    CONSTRAINT uk_usuario_login UNIQUE (ds_login)
+);
