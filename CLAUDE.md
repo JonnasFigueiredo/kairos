@@ -42,8 +42,8 @@ Pacotes por camada em `src/main/java/br/com/kairos/`:
 - `action/`: classes do Struts. Recebem os campos da tela e devolvem o nome do resultado.
 - `business/`: regras de negócio. Lançam `BusinessException` com a mensagem que vai para a tela.
 - `dao/`: SQL com JDBC. Erro de banco vira `TechnicalException`.
-- `vo/`: objetos de dados, sem lógica.
-- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`).
+- `vo/`: objetos de dados, sem regra de negócio. Só atalhos de leitura (formatar data, achar o período pelo código).
+- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, conversores de data e hora, `PlanilhaDeCompromissos`).
 - `exception/`: `BusinessException`, `TechnicalException`.
 
 Fora do Java:
@@ -51,7 +51,7 @@ Fora do Java:
 - `src/main/resources/struts.xml`: mapeia URL para Action e resultado para JSP.
 - `src/main/resources/*.properties`: textos das telas.
 - `src/main/webapp/<modulo>/`: `cad<Entidade>_b.jsp` (consulta) e `cad<Entidade>_i.jsp` (inclusão e alteração), como no projeto base.
-- `db/`: script de criação das tabelas.
+- `db/`: scripts de criação das tabelas e de dados de exemplo.
 
 ## Convenções
 
@@ -62,6 +62,9 @@ Fora do Java:
 - Nunca engolir exceção (`printStackTrace` e seguir). Erro técnico sobe como `TechnicalException`.
 - Operação que grava em mais de uma tabela roda em uma transação.
 - Quem valida é o servidor. Validação em JavaScript é só conforto.
+- Método de Action que grava ou exclui só aceita POST (`requisicaoEhPost`).
+- Lista de select que vem do banco é carregada em `prepare<Metodo>` (interface `Preparable`), nunca em getter chamado pelo JSP.
+- Parâmetro de `LIKE` é montado com `Dao.contendo`, que escapa os curingas.
 - Texto de tela vai em `.properties`, não solto no JSP.
 - Código, mensagens e textos em português.
 

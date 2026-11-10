@@ -1,6 +1,6 @@
 # Requisitos
 
-Fonte da verdade das regras. Cada regra tem um código, que aparece no código-fonte, nos testes e nos commits.
+Fonte da verdade das regras. Cada regra tem um código, citado no código-fonte onde ela é aplicada, nos testes que a cobrem e nos commits.
 
 Origem: **Prova** (enunciado do desafio) ou **Kairos** (decisão do projeto, onde o enunciado não define).
 
@@ -41,6 +41,19 @@ Origem: **Prova** (enunciado do desafio) ou **Kairos** (decisão do projeto, ond
 | RN-RE-03 | A data inicial não pode ser maior que a final. | Kairos |
 | RN-RE-04 | Colunas: código e nome do funcionário, código e nome da agenda, data e hora do compromisso. | Prova, atividade 7 |
 | RN-RE-05 | Dois formatos, com os mesmos dados: HTML em tela e Excel (XLSX). | Prova, atividade 7 |
+
+## Testes automatizados
+
+Rodam sem banco, com `./mvnw test`.
+
+| Regra | Classe de teste |
+| --- | --- |
+| RN-FU-02 | `FuncionarioBusinessTest` |
+| RN-AG-02, RN-AG-03 | `AgendaBusinessTest`, `PeriodoTest` |
+| RN-CO-02, RN-CO-04 | `CompromissoBusinessTest` |
+| RN-CO-05 | `PeriodoTest`, `ConversoresTest` |
+| RN-RE-02, RN-RE-03 | `RelatorioBusinessTest` |
+| RN-RE-04 (Excel) | `PlanilhaDeCompromissosTest` |
 
 ## Fora do escopo
 
