@@ -7,7 +7,7 @@ Este projeto foi construído com um assistente de IA (Claude Code) como par de p
 1. **A regra vem antes do código.** `docs/requisitos.md` lista cada regra com um código `RN-*`. A IA implementa a partir dele, não de memória.
 2. **Contexto fixo e curto.** `CLAUDE.md` carrega em toda sessão: como rodar, stack, estrutura e convenções. O que é detalhe fica em `docs/` e é lido sob demanda.
 3. **Stack travada.** A IA não troca versão nem adiciona biblioteca sem autorização do autor.
-4. **Verificação automática.** Um hook compila o projeto a cada arquivo Java editado. Erro volta para a IA na hora.
+4. **Verificação a cada mudança.** Depois de cada alteração o projeto é compilado e os testes rodam. Um hook automatiza a compilação a cada arquivo Java editado e devolve o erro para a IA na hora.
 5. **Revisão independente.** Agentes só de leitura revisam o que foi escrito, com um contexto limpo, sem o viés de quem escreveu.
 6. **O autor decide.** Decisões de regra, de arquitetura e de escopo são humanas e ficam registradas. O autor lê, executa e commita cada etapa.
 
@@ -20,8 +20,8 @@ Este projeto foi construído com um assistente de IA (Claude Code) como par de p
 | Skill | `.claude/skills/novo-modulo/` | Passo a passo de um cadastro novo nas quatro camadas |
 | Agente | `.claude/agents/revisor-de-camadas.md` | Revisa o respeito às camadas, o uso de JDBC e o tratamento de erro |
 | Agente | `.claude/agents/verificador-de-requisitos.md` | Confere cada `RN-*` contra o código e aponta o que falta |
-| Hook | `.claude/hooks/compilar-apos-edicao.sh` | Compila com Java 8 depois de cada edição em `.java` |
-| Permissões | `.claude/settings.json` | Libera os comandos de rotina e bloqueia a leitura do `.env` |
+| Hook | `.claude/hooks/compilar-apos-edicao.sh` | Compila com Java 8 depois de cada edição em `.java`. É ligado em `.claude/settings.json` |
+| Permissões | `.claude/settings.json` (criado pelo autor em cada máquina) | Liga o hook, libera os comandos de rotina e bloqueia a leitura do `.env` |
 
 ## Skill, agente e hook: a diferença
 
