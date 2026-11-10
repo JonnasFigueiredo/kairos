@@ -18,6 +18,7 @@
 		<log4j2.version>2.17.1</log4j2.version>
 		<mysql.version>8.4.0</mysql.version>
 		<bootstrap.version>5.1.3</bootstrap.version>
+		<poi.version>5.2.5</poi.version>
 		<jetty.version>9.4.7.v20170914</jetty.version>
 
 		<!-- Porta do Jetty. Trocar na linha de comando: -Dkairos.porta=8082 -->
@@ -47,11 +48,32 @@
 			<version>${log4j2.version}</version>
 		</dependency>
 
+		<!-- Fixa a versão da API de log para todas as bibliotecas (o POI pediria uma mais nova que o log4j-core) -->
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j-api</artifactId>
+			<version>${log4j2.version}</version>
+		</dependency>
+
 		<!-- Driver JDBC do MySQL -->
 		<dependency>
 			<groupId>com.mysql</groupId>
 			<artifactId>mysql-connector-j</artifactId>
 			<version>${mysql.version}</version>
+		</dependency>
+
+		<!-- Apache POI: gera a planilha .xlsx do relatório -->
+		<dependency>
+			<groupId>org.apache.poi</groupId>
+			<artifactId>poi-ooxml</artifactId>
+			<version>${poi.version}</version>
+		</dependency>
+
+		<!-- O Struts traz o commons-io 2.6 e o POI precisa do 2.15: sem fixar, vale o mais antigo e a planilha falha -->
+		<dependency>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.15.0</version>
 		</dependency>
 
 		<!-- Bootstrap empacotado como jar: servido em /webjars/bootstrap/... -->
