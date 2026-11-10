@@ -1,12 +1,13 @@
 package br.com.kairos.infra;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.nio.charset.StandardCharsets;
-import java.util.Properties;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import br.com.kairos.exception.TechnicalException;
 
@@ -24,7 +25,7 @@ import br.com.kairos.exception.TechnicalException;
 public final class Configuracao {
 
 	private static final String ARQUIVO = ".env";
-	private static final Properties VALORES_DO_ARQUIVO = lerArquivo();
+	private static final Map<String, String> VALORES_DO_ARQUIVO = lerArquivo(Paths.get(ARQUIVO));
 
 	private Configuracao() {
 		// só métodos estáticos
@@ -34,22 +35,38 @@ public final class Configuracao {
 		String valor = System.getenv(chave);
 
 		if (estaVazio(valor))
-			valor = VALORES_DO_ARQUIVO.getProperty(chave);
+			valor = VALORES_DO_ARQUIVO.get(chave);
 
 		return estaVazio(valor) ? padrao : valor.trim();
 	}
 
-	private static Properties lerArquivo() {
-		Properties valores = new Properties();
-		File arquivo = new File(ARQUIVO);
+	static Map<String, String> lerArquivo(Path arquivo) {
+		if (!Files.isRegularFile(arquivo))
+			return new HashMap<>();
 
-		if (!arquivo.isFile())
-			return valores;
-
-		try (Reader leitor = new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8)) {
-			valores.load(leitor);
+		try {
+			return interpretar(Files.readAllLines(arquivo, StandardCharsets.UTF_8));
 		} catch (IOException e) {
-			throw new TechnicalException("Não foi possível ler o arquivo " + arquivo.getAbsolutePath(), e);
+			throw new TechnicalException("Não foi possível ler o arquivo " + arquivo.toAbsolutePath(), e);
+		}
+	}
+
+	/**
+	 * Lê as linhas no formato CHAVE=valor, do mesmo jeito que o docker compose:
+	 * o valor é tudo que vem depois do primeiro "=", sem interpretar barras
+	 * invertidas. Linha vazia e linha começada por # são ignoradas.
+	 */
+	static Map<String, String> interpretar(List<String> linhas) {
+		Map<String, String> valores = new HashMap<>();
+
+		for (String linha : linhas) {
+			String texto = linha.trim();
+			int igual = texto.indexOf('=');
+
+			if (texto.isEmpty() || texto.startsWith("#") || igual <= 0)
+				continue;
+
+			valores.put(texto.substring(0, igual).trim(), texto.substring(igual + 1).trim());
 		}
 		return valores;
 	}

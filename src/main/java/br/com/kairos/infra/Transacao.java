@@ -36,11 +36,23 @@ public final class Transacao {
 				operacao.executar(conexao);
 				conexao.commit();
 			} catch (SQLException | RuntimeException e) {
-				conexao.rollback();
+				desfazer(conexao, e);
 				throw e;
 			}
 		} catch (SQLException e) {
 			throw new TechnicalException("Erro ao executar a transação", e);
+		}
+	}
+
+	/**
+	 * Se o próprio rollback falhar (a conexão caiu, por exemplo), o erro dele é
+	 * anexado ao erro original, que continua sendo o que sobe e vai para o log.
+	 */
+	private static void desfazer(Connection conexao, Exception erroOriginal) {
+		try {
+			conexao.rollback();
+		} catch (SQLException erroDoRollback) {
+			erroOriginal.addSuppressed(erroDoRollback);
 		}
 	}
 }
