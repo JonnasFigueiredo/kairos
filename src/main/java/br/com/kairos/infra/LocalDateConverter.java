@@ -17,6 +17,10 @@ import com.opensymphony.xwork2.conversion.TypeConversionException;
  */
 public class LocalDateConverter extends StrutsTypeConverter {
 
+	/** Faixa de anos que a coluna DATE do MySQL aceita. */
+	private static final int ANO_MINIMO = 1000;
+	private static final int ANO_MAXIMO = 9999;
+
 	/** Tela → objeto. Campo vazio vira null; texto que não é data vira erro de campo. */
 	@Override
 	@SuppressWarnings("rawtypes")
@@ -24,11 +28,17 @@ public class LocalDateConverter extends StrutsTypeConverter {
 		if (valores == null || valores.length == 0 || valores[0].trim().isEmpty())
 			return null;
 
+		LocalDate data;
 		try {
-			return LocalDate.parse(valores[0].trim());
+			data = LocalDate.parse(valores[0].trim());
 		} catch (DateTimeParseException e) {
 			throw new TypeConversionException("Data inválida: " + valores[0], e);
 		}
+
+		if (data.getYear() < ANO_MINIMO || data.getYear() > ANO_MAXIMO)
+			throw new TypeConversionException("Ano fora da faixa aceita: " + valores[0]);
+
+		return data;
 	}
 
 	/** Objeto → tela. */

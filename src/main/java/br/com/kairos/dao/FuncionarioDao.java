@@ -99,7 +99,7 @@ public class FuncionarioDao extends Dao {
 				PreparedStatement comando = conexao.prepareStatement(sql)) {
 
 			// O valor vai como parâmetro, nunca concatenado no SQL
-			comando.setString(1, "%" + trecho + "%");
+			comando.setString(1, contendo(trecho));
 
 			try (ResultSet resultado = comando.executeQuery()) {
 				return montarLista(resultado);

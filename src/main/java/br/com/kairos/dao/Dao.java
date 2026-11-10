@@ -19,4 +19,20 @@ public abstract class Dao {
 	protected Connection abrirConexao() throws SQLException {
 		return Conexao.abrir();
 	}
+
+	/**
+	 * Monta o parâmetro de um LIKE que procura o trecho em qualquer posição.
+	 *
+	 * No LIKE, % e _ são curingas. Se o usuário digitar um deles, o caractere
+	 * precisa ser procurado ao pé da letra, então recebe uma barra invertida
+	 * na frente (o caractere de escape padrão do MySQL).
+	 */
+	protected static String contendo(String trecho) {
+		String literal = trecho
+				.replace("\\", "\\\\")
+				.replace("%", "\\%")
+				.replace("_", "\\_");
+
+		return "%" + literal + "%";
+	}
 }

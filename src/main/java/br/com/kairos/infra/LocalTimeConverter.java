@@ -3,6 +3,7 @@ package br.com.kairos.infra;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 import org.apache.struts2.util.StrutsTypeConverter;
@@ -19,7 +20,12 @@ public class LocalTimeConverter extends StrutsTypeConverter {
 
 	private static final DateTimeFormatter HORA_E_MINUTO = DateTimeFormatter.ofPattern("HH:mm");
 
-	/** Tela → objeto. Campo vazio vira null; texto que não é hora vira erro de campo. */
+	/**
+	 * Tela → objeto. Campo vazio vira null; texto que não é hora vira erro de campo.
+	 *
+	 * Segundos e frações são descartados: o sistema trabalha em minutos. Sem isso,
+	 * 11:59:59.9 passaria como manhã e o banco arredondaria para 12:00, que é tarde.
+	 */
 	@Override
 	@SuppressWarnings("rawtypes")
 	public Object convertFromString(Map contexto, String[] valores, Class tipo) {
@@ -27,7 +33,7 @@ public class LocalTimeConverter extends StrutsTypeConverter {
 			return null;
 
 		try {
-			return LocalTime.parse(valores[0].trim());
+			return LocalTime.parse(valores[0].trim()).truncatedTo(ChronoUnit.MINUTES);
 		} catch (DateTimeParseException e) {
 			throw new TypeConversionException("Horário inválido: " + valores[0], e);
 		}

@@ -132,8 +132,8 @@ public class CompromissoDao extends Dao {
 		try (Connection conexao = abrirConexao();
 				PreparedStatement comando = conexao.prepareStatement(sql)) {
 
-			comando.setString(1, "%" + trecho + "%");
-			comando.setString(2, "%" + trecho + "%");
+			comando.setString(1, contendo(trecho));
+			comando.setString(2, contendo(trecho));
 
 			try (ResultSet resultado = comando.executeQuery()) {
 				return montarLista(resultado);
