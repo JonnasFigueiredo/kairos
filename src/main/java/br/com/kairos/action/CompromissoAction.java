@@ -1,5 +1,7 @@
 package br.com.kairos.action;
 
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ import br.com.kairos.business.CompromissoBusiness;
 import br.com.kairos.business.FuncionarioBusiness;
 import br.com.kairos.exception.BusinessException;
 import br.com.kairos.infra.Action;
+import br.com.kairos.infra.CalendarioMensal;
 import br.com.kairos.vo.AgendaVo;
 import br.com.kairos.vo.CompromissoVo;
 import br.com.kairos.vo.FuncionarioVo;
@@ -34,6 +37,10 @@ public class CompromissoAction extends Action implements Preparable {
 	private String busca;
 	/** Linhas da tabela da tela de consulta. */
 	private List<CompromissoVo> compromissos = new ArrayList<>();
+	/** Mês pedido na URL (aaaa-mm). Vazio ou inválido: o mês atual. */
+	private String mes;
+	/** Grade do mês na tela de consulta, com os mesmos compromissos da tabela. */
+	private CalendarioMensal calendario;
 	/** Compromisso do formulário (inclusão e alteração) e da exclusão. */
 	private CompromissoVo compromissoVo = new CompromissoVo();
 
@@ -67,6 +74,9 @@ public class CompromissoAction extends Action implements Preparable {
 
 	public String listar() {
 		compromissos = business.pesquisar(busca);
+
+		YearMonth mesExibido = CalendarioMensal.mesDe(mes, YearMonth.now());
+		calendario = new CalendarioMensal(mesExibido, compromissos, LocalDate.now());
 		return SUCCESS;
 	}
 
@@ -129,6 +139,19 @@ public class CompromissoAction extends Action implements Preparable {
 
 	public List<CompromissoVo> getCompromissos() {
 		return compromissos;
+	}
+
+	/** Devolve o mês em exibição, já corrigido, para o campo escondido do formulário de pesquisa. */
+	public String getMes() {
+		return calendario == null ? mes : calendario.getMes();
+	}
+
+	public void setMes(String mes) {
+		this.mes = mes;
+	}
+
+	public CalendarioMensal getCalendario() {
+		return calendario;
 	}
 
 	public CompromissoVo getCompromissoVo() {

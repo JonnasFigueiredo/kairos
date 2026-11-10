@@ -10,6 +10,7 @@
 	<div class="k-barra">
 		<s:form action="listarCompromissos" method="get" cssClass="k-busca">
 			<label class="visually-hidden" for="busca"><s:text name="compromisso.busca"/></label>
+			<s:hidden name="mes"/>
 			<s:textfield id="busca" name="busca" cssClass="form-control" placeholder="%{getText('compromisso.busca')}"/>
 			<button type="submit" class="btn k-btn"><s:text name="comum.pesquisar"/></button>
 			<s:if test="busca != null && !busca.isEmpty()">
@@ -18,6 +19,75 @@
 		</s:form>
 		<a class="btn k-btn" href="<s:url action='novoCompromissos'/>"><s:text name="comum.novo"/></a>
 	</div>
+
+	<%-- Calendário do mês, com os mesmos compromissos da tabela abaixo. A pesquisa acompanha a troca de mês.
+	     escapeAmp="false": quem escapa o "&" do endereço é o s:property, uma vez só --%>
+	<s:url action="listarCompromissos" var="urlMesAnterior" escapeAmp="false">
+		<s:param name="mes" value="calendario.mesAnterior"/>
+		<s:param name="busca" value="busca"/>
+	</s:url>
+	<s:url action="listarCompromissos" var="urlMesSeguinte" escapeAmp="false">
+		<s:param name="mes" value="calendario.mesSeguinte"/>
+		<s:param name="busca" value="busca"/>
+	</s:url>
+	<%-- Sem o parâmetro "mes", a Action mostra o mês atual --%>
+	<s:url action="listarCompromissos" var="urlHoje" escapeAmp="false">
+		<s:param name="busca" value="busca"/>
+	</s:url>
+	<div class="k-calendario-controles">
+		<a class="btn btn-outline-secondary" href="<s:property value='#urlMesAnterior'/>" aria-label="<s:text name='calendario.mes.anterior'/>">&lsaquo;</a>
+		<h2 class="h5 mb-0 k-calendario-titulo"><s:property value="calendario.titulo"/></h2>
+		<a class="btn btn-outline-secondary" href="<s:property value='#urlMesSeguinte'/>" aria-label="<s:text name='calendario.mes.seguinte'/>">&rsaquo;</a>
+		<a class="btn btn-outline-secondary" href="<s:property value='#urlHoje'/>"><s:text name="calendario.hoje"/></a>
+	</div>
+
+	<div class="table-responsive">
+		<table class="k-calendario">
+			<caption class="visually-hidden"><s:text name="calendario.legenda"/></caption>
+			<thead>
+				<tr>
+					<th scope="col"><s:text name="calendario.dom"/></th>
+					<th scope="col"><s:text name="calendario.seg"/></th>
+					<th scope="col"><s:text name="calendario.ter"/></th>
+					<th scope="col"><s:text name="calendario.qua"/></th>
+					<th scope="col"><s:text name="calendario.qui"/></th>
+					<th scope="col"><s:text name="calendario.sex"/></th>
+					<th scope="col"><s:text name="calendario.sab"/></th>
+				</tr>
+			</thead>
+			<tbody>
+				<s:iterator value="calendario.semanas">
+					<tr>
+						<%-- Sem "value": percorre a semana que está no topo da pilha --%>
+						<s:iterator>
+							<td class="<s:if test='!doMes'>k-calendario-fora</s:if><s:if test='hoje'> k-calendario-hoje</s:if>">
+								<span class="k-calendario-dia"><s:property value="numero"/></span>
+								<s:if test="doMes">
+									<%-- O "+" abre o formulário de inclusão com a data do dia preenchida --%>
+									<s:url action="novoCompromissos" var="urlNovoNoDia">
+										<s:param name="compromissoVo.data" value="data"/>
+									</s:url>
+									<a class="k-calendario-adicionar" href="<s:property value='#urlNovoNoDia'/>"
+										aria-label="<s:text name='calendario.novo.no.dia'/> <s:property value='dataFormatada'/>">+</a>
+									<s:iterator value="compromissos">
+										<s:url action="editarCompromissos" var="urlEvento">
+											<s:param name="compromissoVo.codigo" value="codigo"/>
+										</s:url>
+										<a class="k-evento" href="<s:property value='#urlEvento'/>">
+											<strong><s:property value="horarioFormatado"/></strong> <s:property value="nomeFuncionario"/>
+											<span><s:property value="nomeAgenda"/></span>
+										</a>
+									</s:iterator>
+								</s:if>
+							</td>
+						</s:iterator>
+					</tr>
+				</s:iterator>
+			</tbody>
+		</table>
+	</div>
+
+	<h2 class="h5 k-lista-titulo"><s:text name="compromisso.lista"/></h2>
 
 	<div class="table-responsive">
 		<table class="table k-tabela mb-0">
