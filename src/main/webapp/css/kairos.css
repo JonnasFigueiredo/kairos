@@ -92,3 +92,7 @@ a.k-item:hover { background: var(--k-hover); color: var(--k-texto); }
 	.k-col-codigo { width: auto; }
 	.k-busca { max-width: none; flex-basis: 100%; }
 }
+
+/* Ícone do calendário e do relógio nos campos de data e hora: claro no tema escuro */
+input[type="date"]::-webkit-calendar-picker-indicator,
+input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); }

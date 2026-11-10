@@ -65,6 +65,13 @@
 			<allowed-methods>listar,novo,editar,salvar,excluir</allowed-methods>
 		</action>
 
+		<action name="*Compromissos" class="br.com.kairos.action.CompromissoAction" method="{1}">
+			<result name="success">/compromisso/cadCompromisso_b.jsp</result>
+			<result name="input">/compromisso/cadCompromisso_i.jsp</result>
+			<result name="redirect" type="redirectAction">listarCompromissos</result>
+			<allowed-methods>listar,novo,editar,salvar,excluir</allowed-methods>
+		</action>
+
 	</package>
 
 </struts>

@@ -29,8 +29,10 @@
 					<a class="k-item <s:if test="#menuAtivo == 'agendas'">active</s:if>" href="<s:url action='listarAgendas'/>">
 						<s:text name="menu.agendas"/>
 					</a>
-					<%-- Os itens abaixo viram links quando cada cadastro ficar pronto --%>
-					<span class="k-item k-item-inativo"><s:text name="menu.compromissos"/></span>
+					<a class="k-item <s:if test="#menuAtivo == 'compromissos'">active</s:if>" href="<s:url action='listarCompromissos'/>">
+						<s:text name="menu.compromissos"/>
+					</a>
+					<%-- O item abaixo vira link quando o relatório ficar pronto --%>
 					<span class="k-item k-item-inativo"><s:text name="menu.relatorio"/></span>
 				</div>
 			</nav>
