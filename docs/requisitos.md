@@ -55,6 +55,10 @@ Rodam sem banco, com `./mvnw test`.
 | RN-RE-02, RN-RE-03 | `RelatorioBusinessTest` |
 | RN-RE-04 (Excel) | `PlanilhaDeCompromissosTest` |
 
+## Além do enunciado
+
+A consulta de compromissos mostra também um calendário do mês, com os mesmos registros da tabela. É só outra forma de ver a consulta (RN-CO-01): não cria regra nova. A montagem da grade tem teste em `CalendarioMensalTest`.
+
 ## Fora do escopo
 
 O enunciado não pede e o projeto não faz, por enquanto: login, conflito de horário entre compromissos, web service SOAP.

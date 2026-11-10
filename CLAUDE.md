@@ -44,7 +44,7 @@ Pacotes por camada em `src/main/java/br/com/kairos/`:
 - `business/`: regras de negócio. Lançam `BusinessException` com a mensagem que vai para a tela.
 - `dao/`: SQL com JDBC. Erro de banco vira `TechnicalException`.
 - `vo/`: objetos de dados, sem regra de negócio. Só atalhos de leitura (formatar data, achar o período pelo código).
-- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, conversores de data e hora, `PlanilhaDeCompromissos`).
+- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, conversores de data e hora, `PlanilhaDeCompromissos`, `CalendarioMensal`).
 - `exception/`: `BusinessException`, `TechnicalException`.
 
 Fora do Java:

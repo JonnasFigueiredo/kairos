@@ -10,7 +10,7 @@ Projeto do desafio técnico do Programa de Formação. Foi criado do zero, com a
 | --- | --- | --- |
 | 1 | CRUD de funcionários | Menu Funcionários |
 | 2 | CRUD de agendas, com o período disponível em um `<select>` (Manhã, Tarde, Ambos) | Menu Agendas |
-| 3 | CRUD de compromissos | Menu Compromissos |
+| 3 | CRUD de compromissos | Menu Compromissos (tabela e calendário do mês) |
 | 4 | Excluir um funcionário exclui os compromissos dele | `FuncionarioBusiness.excluir` |
 | 5 | Agenda com compromissos não pode ser excluída | `AgendaBusiness.excluir` |
 | 6 | Compromisso fora do período da agenda é recusado | `CompromissoBusiness.validarHorario` |
@@ -45,7 +45,7 @@ Para parar: `Ctrl+C` na aplicação e `docker compose down` no banco. Os dados f
 ./mvnw test
 ```
 
-49 testes de unidade, sem banco. Cobrem as regras que não dependem de dados gravados: validações, a fronteira entre manhã e tarde (11:59 e 12:00), os filtros do relatório e o conteúdo da planilha. A relação entre cada regra e a classe de teste está em [docs/requisitos.md](docs/requisitos.md#testes-automatizados).
+55 testes de unidade, sem banco. Cobrem as regras que não dependem de dados gravados: validações, a fronteira entre manhã e tarde (11:59 e 12:00), os filtros do relatório, o conteúdo da planilha e a grade do calendário. A relação entre cada regra e a classe de teste está em [docs/requisitos.md](docs/requisitos.md#testes-automatizados).
 
 ## Tecnologias
 
@@ -74,7 +74,7 @@ src/main/java/br/com/kairos/
   business/    regras de negócio; lança BusinessException
   dao/         SQL com JDBC; lança TechnicalException
   vo/          objetos de dados
-  infra/       classes de apoio: conexão, transação, enum de período, conversores, planilha
+  infra/       classes de apoio: conexão, transação, enum de período, conversores, planilha, calendário
   exception/   BusinessException e TechnicalException
 src/main/resources/
   struts.xml                       mapeia URL → Action → JSP
