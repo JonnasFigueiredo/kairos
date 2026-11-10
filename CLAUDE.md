@@ -29,11 +29,11 @@ docker compose down -v      # para e apaga o banco
 | Tela | Bootstrap 5.1.3 (webjar), sem framework JavaScript |
 | Banco | MySQL 8.4 em container, JDBC puro (`mysql-connector-j`) |
 | Servidor | Jetty 9.4.7 (`jetty-maven-plugin`) |
-| Excel | Apache POI |
+| Excel | Apache POI 5.2.5 (`poi-ooxml`) |
 | Log | log4j2 2.17.1 |
 | Build | Maven (war) + wrapper |
 
-Não trocar versão nem acrescentar biblioteca sem perguntar ao autor. Nada de Spring, JPA, Lombok ou sintaxe acima do Java 8 (`var`, records, text blocks).
+Não trocar versão nem acrescentar biblioteca sem perguntar ao autor. `log4j-api` e `commons-io` têm versão fixada no `pom.xml` porque o Struts e o POI pedem versões diferentes; não remover. Nada de Spring, JPA, Lombok ou sintaxe acima do Java 8 (`var`, records, text blocks).
 
 ## Estrutura
 
