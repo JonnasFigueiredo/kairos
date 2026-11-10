@@ -140,28 +140,20 @@ input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); }
 .k-evento span { display: block; color: var(--k-suave); }
 .k-lista-titulo { padding: 20px 16px 4px; }
 
-/* Tela de login: apresentação à esquerda, formulário à direita */
+/* Tela de login: identidade do sistema à esquerda, formulário à direita */
 .k-login-corpo { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at 20% 15%, #211034 0, #09070d 48%, #000 100%); }
-.k-login { width: 100%; max-width: 960px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #33243e; border-radius: 22px; overflow: hidden; background: var(--k-superficie); box-shadow: 0 24px 80px rgba(0, 0, 0, .4); }
-.k-login-apresentacao { position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 520px; padding: 42px; background: linear-gradient(145deg, #21102f, #100919 70%); }
-.k-login-marca { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -.025em; }
-.k-login-mensagem { position: relative; z-index: 1; margin: auto 0; max-width: 340px; }
-.k-login-chamada { color: #d1a4fa; font-size: 12px; font-weight: 700; letter-spacing: .12em; }
-.k-login-mensagem h2 { color: #fff; font-size: clamp(30px, 3.5vw, 43px); font-weight: 700; line-height: 1.12; letter-spacing: -.03em; margin-bottom: 18px; }
-.k-login-mensagem > p:last-child { color: #d0c4da; line-height: 1.6; margin-bottom: 0; }
-/* Círculos decorativos no canto */
-.k-login-ilustracao { position: absolute; width: 260px; height: 260px; right: -75px; bottom: -105px; border: 1px solid #9852ce; border-radius: 50%; opacity: .65; }
-.k-login-ilustracao span:nth-child(1) { position: absolute; left: 30px; top: 16px; color: #d8b3fb; font-size: 27px; }
-.k-login-ilustracao span:nth-child(2), .k-login-ilustracao span:nth-child(3) { position: absolute; inset: 24px; border: 1px solid #9852ce; border-radius: 50%; }
-.k-login-ilustracao span:nth-child(3) { inset: 48px; }
+.k-login { width: 100%; max-width: 880px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #33243e; border-radius: 22px; overflow: hidden; background: var(--k-superficie); box-shadow: 0 24px 80px rgba(0, 0, 0, .4); }
+.k-login-apresentacao { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 460px; padding: 42px; text-align: center; background: linear-gradient(145deg, #21102f, #100919 70%); }
+.k-login-icone { width: 120px; height: 120px; border-radius: 28px; box-shadow: 0 16px 48px rgba(113, 0, 197, .35); }
+.k-login-marca { margin: 24px 0 8px; color: #fff; font-size: 2.25rem; font-weight: 700; line-height: 1.1; letter-spacing: -.03em; }
+.k-login-descricao { max-width: 260px; margin: 0; color: #d0c4da; line-height: 1.5; }
 .k-login-cartao { display: flex; flex-direction: column; justify-content: center; padding: 48px; }
-.k-login-cartao .k-titulo { font-size: 27px; }
-.k-login-descricao { color: var(--k-suave); margin: 8px 0 24px; }
+.k-login-cartao .k-titulo { font-size: 1.75rem; margin-bottom: 24px; }
 .k-login-cartao .form-control, .k-login-cartao .k-btn { min-height: 48px; }
 @media (max-width: 767.98px) {
-	.k-login { max-width: 480px; grid-template-columns: 1fr; }
-	.k-login-apresentacao { min-height: 0; padding: 28px; }
-	.k-login-mensagem { margin: 30px 0 8px; }
-	.k-login-mensagem h2 { font-size: 30px; }
+	.k-login { max-width: 440px; grid-template-columns: 1fr; }
+	.k-login-apresentacao { min-height: 0; padding: 32px 28px; }
+	.k-login-icone { width: 88px; height: 88px; border-radius: 22px; }
+	.k-login-marca { margin-top: 16px; font-size: 1.75rem; }
 	.k-login-cartao { padding: 28px; }
 }

@@ -13,22 +13,15 @@
 	</head>
 	<body class="k-login-corpo">
 		<main class="k-login">
-			<section class="k-login-apresentacao" aria-labelledby="apresentacao-titulo">
-				<div class="k-login-marca">
-					<img class="k-logo" src="<s:url value='/img/kairos-icone.png'/>" width="40" height="40" alt="" aria-hidden="true">
-					<s:text name="app.nome"/>
-				</div>
-				<div class="k-login-mensagem">
-					<p class="k-login-chamada"><s:text name="login.chamada"/></p>
-					<h2 id="apresentacao-titulo"><s:text name="login.apresentacao.titulo"/></h2>
-					<p><s:text name="login.apresentacao.texto"/></p>
-				</div>
-				<div class="k-login-ilustracao" aria-hidden="true"><span>&#10022;</span><span></span><span></span></div>
+			<%-- Lado esquerdo: identidade do sistema. O ícone é decorativo; o nome vem em texto logo abaixo --%>
+			<section class="k-login-apresentacao">
+				<img class="k-login-icone" src="<s:url value='/img/kairos-icone-256.png'/>" width="120" height="120" alt="" aria-hidden="true">
+				<p class="k-login-marca"><s:text name="app.nome"/></p>
+				<p class="k-login-descricao"><s:text name="app.descricao"/></p>
 			</section>
 
 			<section class="k-login-cartao" aria-labelledby="login-titulo">
 				<h1 id="login-titulo" class="k-titulo"><s:text name="login.titulo"/></h1>
-				<p class="k-login-descricao"><s:text name="login.descricao"/></p>
 				<%@ include file="/WEB-INF/layout/mensagens.jspf"%>
 
 				<s:form action="entrarLogin" method="post">
