@@ -6,7 +6,7 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="icon" type="image/png" href="<s:url value='/img/kairos-icone.png'/>">
+		<link rel="icon" type="image/png" sizes="32x32" href="<s:url value='/img/kairos-favicon.png'/>">
 		<title><s:text name="app.nome"/> - <s:text name="login.titulo"/></title>
 		<link rel="stylesheet" href="<s:url value='/webjars/bootstrap/5.1.3/css/bootstrap.min.css'/>">
 		<link rel="stylesheet" href="<s:url value='/css/kairos.css'/>">
@@ -15,7 +15,7 @@
 		<main class="k-login">
 			<section class="k-login-apresentacao" aria-labelledby="apresentacao-titulo">
 				<div class="k-login-marca">
-					<img class="k-logo" src="<s:url value='/img/kairos-icone.png'/>" alt="" aria-hidden="true">
+					<img class="k-logo" src="<s:url value='/img/kairos-icone.png'/>" width="40" height="40" alt="" aria-hidden="true">
 					<s:text name="app.nome"/>
 				</div>
 				<div class="k-login-mensagem">
