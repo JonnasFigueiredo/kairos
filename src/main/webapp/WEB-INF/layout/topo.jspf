@@ -41,6 +41,14 @@
 						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3h10l4 4v14H5zM14 3v5h5M8 12h8M8 16h8M8 19h5"/></svg>
 						<s:text name="menu.relatorio"/>
 					</a>
+
+					<%-- Usuário que entrou e botão Sair. Sair altera a sessão, então vai por POST --%>
+					<s:if test="#session.usuario != null">
+						<s:form action="sairLogin" method="post" cssClass="k-usuario">
+							<span class="k-usuario-nome"><s:property value="#session.usuario.nome"/></span>
+							<button type="submit" class="btn btn-sm btn-outline-secondary"><s:text name="login.sair"/></button>
+						</s:form>
+					</s:if>
 				</div>
 			</nav>
 

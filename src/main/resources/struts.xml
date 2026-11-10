@@ -20,9 +20,13 @@
 
 	<package name="kairos" extends="struts-default">
 
-		<!-- Pilha padrão do Struts, com um ajuste: toda exceção não tratada vai para o log -->
 		<interceptors>
-			<interceptor-stack name="pilhaKairos">
+			<!-- RN-AC-01: só deixa passar quem tem usuário na sessão -->
+			<interceptor name="autenticacao" class="br.com.kairos.infra.AutenticacaoInterceptor" />
+
+			<!-- Pilha padrão do Struts, com um ajuste: toda exceção não tratada vai para o log.
+			     Sem login: usada só pela tela de login e pelas páginas de erro -->
+			<interceptor-stack name="pilhaPublica">
 				<!-- Guarda as mensagens na sessão durante um redirect e devolve na página seguinte -->
 				<interceptor-ref name="store">
 					<param name="operationMode">AUTOMATIC</param>
@@ -35,12 +39,20 @@
 					<param name="workflow.excludeMethods">input,back,cancel,browse,listar,editar,excluir</param>
 				</interceptor-ref>
 			</interceptor-stack>
+
+			<!-- A mesma pilha, com o porteiro na frente. É a padrão: Action nova já nasce protegida -->
+			<interceptor-stack name="pilhaKairos">
+				<interceptor-ref name="autenticacao" />
+				<interceptor-ref name="pilhaPublica" />
+			</interceptor-stack>
 		</interceptors>
 		<default-interceptor-ref name="pilhaKairos" />
 
 		<!-- Falha técnica em qualquer Action cai na página de erro, sem detalhe interno na tela -->
 		<global-results>
 			<result name="erroTecnico">/erro/erro.jsp</result>
+			<!-- Devolvido pelo interceptor de autenticação quando não há usuário na sessão -->
+			<result name="login" type="redirectAction">abrirLogin</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="br.com.kairos.exception.TechnicalException" result="erroTecnico" />
@@ -50,10 +62,21 @@
 
 		<!-- Páginas de erro do servidor (web.xml): sem classe, só entregam o JSP -->
 		<action name="erro">
+			<interceptor-ref name="pilhaPublica" />
 			<result>/erro/erro.jsp</result>
 		</action>
 		<action name="naoEncontrado">
+			<interceptor-ref name="pilhaPublica" />
 			<result>/erro/naoEncontrado.jsp</result>
+		</action>
+
+		<!-- Login: abrirLogin, entrarLogin e sairLogin. Fora do porteiro, senão ninguém conseguiria entrar -->
+		<action name="*Login" class="br.com.kairos.action.LoginAction" method="{1}">
+			<interceptor-ref name="pilhaPublica" />
+			<result name="success">/login/login.jsp</result>
+			<result name="input">/login/login.jsp</result>
+			<result name="redirect" type="redirectAction">inicio</result>
+			<allowed-methods>abrir,entrar,sair</allowed-methods>
 		</action>
 
 		<action name="inicio" class="br.com.kairos.action.InicioAction">

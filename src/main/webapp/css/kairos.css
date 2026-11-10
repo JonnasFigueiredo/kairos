@@ -25,7 +25,10 @@ body {
 /* Estrutura: menu lateral fixo e conteúdo ao lado */
 .k-app { display: flex; min-height: 100vh; }
 .k-sidebar { width: 250px; flex-shrink: 0; background: var(--k-superficie); border-right: 1px solid var(--k-borda); position: sticky; top: 0; height: 100vh; }
-.k-menu { padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; }
+.k-menu { padding: 20px 14px; display: flex; flex-direction: column; gap: 4px; min-height: 100%; }
+/* Usuário e botão Sair: no pé do menu */
+.k-usuario { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-top: auto; padding: 14px 12px 0; border-top: 1px solid var(--k-borda); }
+.k-usuario-nome { color: var(--k-suave); font-size: .875rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .k-marca { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 20px; letter-spacing: -.025em; padding: 4px 10px 22px; color: var(--k-texto); text-decoration: none; }
 .k-marca:hover { color: var(--k-texto); }
 .k-logo { width: 40px; height: 40px; flex-shrink: 0; border-radius: 11px; object-fit: cover; }
@@ -56,6 +59,8 @@ a.k-item:hover { background: var(--k-hover); color: var(--k-texto); }
 	.k-sidebar { width: 100%; height: auto; position: static; border-right: 0; border-bottom: 1px solid var(--k-borda); }
 	.k-menu { flex-direction: row; align-items: center; overflow-x: auto; padding: 10px 12px; }
 	.k-marca { padding: 4px 10px; }
+	.k-menu { min-height: 0; }
+	.k-usuario { margin: 0 0 0 auto; padding: 0 0 0 12px; border-top: 0; flex-shrink: 0; }
 	.k-conteudo { padding: 18px 16px; }
 }
 
@@ -134,3 +139,29 @@ input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); }
 .k-evento strong { font-variant-numeric: tabular-nums; }
 .k-evento span { display: block; color: var(--k-suave); }
 .k-lista-titulo { padding: 20px 16px 4px; }
+
+/* Tela de login: apresentação à esquerda, formulário à direita */
+.k-login-corpo { min-height: 100vh; display: grid; place-items: center; padding: 24px; background: radial-gradient(ellipse at 20% 15%, #211034 0, #09070d 48%, #000 100%); }
+.k-login { width: 100%; max-width: 960px; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #33243e; border-radius: 22px; overflow: hidden; background: var(--k-superficie); box-shadow: 0 24px 80px rgba(0, 0, 0, .4); }
+.k-login-apresentacao { position: relative; overflow: hidden; display: flex; flex-direction: column; min-height: 520px; padding: 42px; background: linear-gradient(145deg, #21102f, #100919 70%); }
+.k-login-marca { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; font-size: 22px; font-weight: 700; letter-spacing: -.025em; }
+.k-login-mensagem { position: relative; z-index: 1; margin: auto 0; max-width: 340px; }
+.k-login-chamada { color: #d1a4fa; font-size: 12px; font-weight: 700; letter-spacing: .12em; }
+.k-login-mensagem h2 { color: #fff; font-size: clamp(30px, 3.5vw, 43px); font-weight: 700; line-height: 1.12; letter-spacing: -.03em; margin-bottom: 18px; }
+.k-login-mensagem > p:last-child { color: #d0c4da; line-height: 1.6; margin-bottom: 0; }
+/* Círculos decorativos no canto */
+.k-login-ilustracao { position: absolute; width: 260px; height: 260px; right: -75px; bottom: -105px; border: 1px solid #9852ce; border-radius: 50%; opacity: .65; }
+.k-login-ilustracao span:nth-child(1) { position: absolute; left: 30px; top: 16px; color: #d8b3fb; font-size: 27px; }
+.k-login-ilustracao span:nth-child(2), .k-login-ilustracao span:nth-child(3) { position: absolute; inset: 24px; border: 1px solid #9852ce; border-radius: 50%; }
+.k-login-ilustracao span:nth-child(3) { inset: 48px; }
+.k-login-cartao { display: flex; flex-direction: column; justify-content: center; padding: 48px; }
+.k-login-cartao .k-titulo { font-size: 27px; }
+.k-login-descricao { color: var(--k-suave); margin: 8px 0 24px; }
+.k-login-cartao .form-control, .k-login-cartao .k-btn { min-height: 48px; }
+@media (max-width: 767.98px) {
+	.k-login { max-width: 480px; grid-template-columns: 1fr; }
+	.k-login-apresentacao { min-height: 0; padding: 28px; }
+	.k-login-mensagem { margin: 30px 0 8px; }
+	.k-login-mensagem h2 { font-size: 30px; }
+	.k-login-cartao { padding: 28px; }
+}
