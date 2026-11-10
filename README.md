@@ -30,7 +30,7 @@ docker compose up -d            # com Podman: podman compose up -d
 ./mvnw jetty:run                # no Windows: mvnw.cmd jetty:run
 ```
 
-Abra http://localhost:8080/kairos
+Abra http://localhost:8080/kairos e entre com o usuário de desenvolvimento: `admin`, senha `kairos`.
 
 - Na primeira subida o MySQL cria as tabelas e alguns dados de exemplo. Pode levar de um a quatro minutos; `docker compose ps` mostra `healthy` quando terminou.
 - O `JAVA_HOME` precisa apontar para um JDK 8.
@@ -45,7 +45,7 @@ Para parar: `Ctrl+C` na aplicação e `docker compose down` no banco. Os dados f
 ./mvnw test
 ```
 
-55 testes de unidade, sem banco. Cobrem as regras que não dependem de dados gravados: validações, a fronteira entre manhã e tarde (11:59 e 12:00), os filtros do relatório, o conteúdo da planilha e a grade do calendário. A relação entre cada regra e a classe de teste está em [docs/requisitos.md](docs/requisitos.md#testes-automatizados).
+66 testes de unidade, sem banco. Cobrem as regras que não dependem de dados gravados: validações, a fronteira entre manhã e tarde (11:59 e 12:00), os filtros do relatório, o conteúdo da planilha, a grade do calendário, o cálculo da senha e o bloqueio de quem não entrou. A relação entre cada regra e a classe de teste está em [docs/requisitos.md](docs/requisitos.md#testes-automatizados).
 
 ## Tecnologias
 
@@ -74,7 +74,7 @@ src/main/java/br/com/kairos/
   business/    regras de negócio; lança BusinessException
   dao/         SQL com JDBC; lança TechnicalException
   vo/          objetos de dados
-  infra/       classes de apoio: conexão, transação, enum de período, conversores, planilha, calendário
+  infra/       classes de apoio: conexão, transação, enum de período, conversores, planilha, calendário, senha, interceptor de login
   exception/   BusinessException e TechnicalException
 src/main/resources/
   struts.xml                       mapeia URL → Action → JSP
@@ -95,13 +95,15 @@ Pontos em que o enunciado não define o comportamento, ou em que este projeto di
 - **Erro técnico não some.** Falha de banco vira `TechnicalException`, vai para o log e o usuário vê uma página de aviso. Nada de `printStackTrace` seguido de lista vazia.
 - **Um formulário para incluir e alterar.** O código vai em campo escondido; vazio é inclusão, preenchido é alteração.
 - **Excluir e gravar só por POST.** Um link não altera dados.
+- **Login por interceptor.** O enunciado não pede login; foi acrescentado. Um interceptor do Struts fica na frente de todas as Actions e só deixa passar quem tem sessão, então uma Action nova já nasce protegida. A senha é guardada como PBKDF2 com sal, que vem no Java 8, sem biblioteca extra. O identificador da sessão é trocado ao entrar.
 - **Saída sempre com escape.** Os JSPs usam `<s:property>`, e as consultas usam `PreparedStatement` com parâmetros.
 - **Data e hora como valores no Excel.** O usuário consegue ordenar e filtrar a planilha.
 
 ## Limites conhecidos
 
 - A validação e a gravação usam conexões separadas. Dois usuários ao mesmo tempo podem, em tese, deixar um compromisso fora do período da agenda. A correção é validar e gravar na mesma transação, com bloqueio da linha da agenda.
-- Não há login nem proteção contra envio forjado de formulário (CSRF).
+- Não há proteção contra envio forjado de formulário (CSRF). O caminho é o interceptor `token` do Struts.
+- Há um usuário só, criado pelo script do banco. Não há tela de cadastro de usuários, troca de senha nem bloqueio por tentativas.
 - Não há pool de conexões nem teste automatizado com banco.
 
 ## Documentação

@@ -15,6 +15,7 @@ docker compose down -v      # para e apaga o banco
 - Exige JDK 8 no `JAVA_HOME`. Maven vem pelo wrapper; não instalar à parte.
 - Configuração do banco em `.env` (copiar de `.env.example`). `.env` nunca vai para o git.
 - Sem `.env`, o compose usa valores padrão de desenvolvimento (banco, usuário e senha `kairos`).
+- Usuário de desenvolvimento da aplicação: `admin`, senha `kairos` (criado por `db/02_dados_iniciais.sql`).
 - A primeira subida do MySQL leva de 1 a 4 minutos. Esperar o `healthy`.
 - Os scripts de `db/` rodam só com o volume vazio. Mudou a estrutura: `docker compose down -v` e subir de novo.
 - Porta 8080 ocupada: `./mvnw jetty:run -Dkairos.porta=8082`.
@@ -44,7 +45,7 @@ Pacotes por camada em `src/main/java/br/com/kairos/`:
 - `business/`: regras de negócio. Lançam `BusinessException` com a mensagem que vai para a tela.
 - `dao/`: SQL com JDBC. Erro de banco vira `TechnicalException`.
 - `vo/`: objetos de dados, sem regra de negócio. Só atalhos de leitura (formatar data, achar o período pelo código).
-- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, conversores de data e hora, `PlanilhaDeCompromissos`, `CalendarioMensal`).
+- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, conversores de data e hora, `PlanilhaDeCompromissos`, `CalendarioMensal`, `Senha`, `AutenticacaoInterceptor`).
 - `exception/`: `BusinessException`, `TechnicalException`.
 
 Fora do Java:
@@ -64,6 +65,8 @@ Fora do Java:
 - Operação que grava em mais de uma tabela roda em uma transação.
 - Quem valida é o servidor. Validação em JavaScript é só conforto.
 - Método de Action que grava ou exclui só aceita POST (`requisicaoEhPost`).
+- Toda Action passa pelo `AutenticacaoInterceptor` (pilha padrão do `struts.xml`). Só a tela de login e as páginas de erro usam a `pilhaPublica`.
+- Senha nunca em texto puro: gravar e conferir sempre por `Senha`.
 - Lista de select que vem do banco é carregada em `prepare<Metodo>` (interface `Preparable`), nunca em getter chamado pelo JSP.
 - Parâmetro de `LIKE` é montado com `Dao.contendo`, que escapa os curingas.
 - Texto de tela vai em `.properties`, não solto no JSP.

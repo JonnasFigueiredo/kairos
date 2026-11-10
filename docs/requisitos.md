@@ -42,6 +42,15 @@ Origem: **Prova** (enunciado do desafio) ou **Kairos** (decisão do projeto, ond
 | RN-RE-04 | Colunas: código e nome do funcionário, código e nome da agenda, data e hora do compromisso. | Prova, atividade 7 |
 | RN-RE-05 | Dois formatos, com os mesmos dados: HTML em tela e Excel (XLSX). | Prova, atividade 7 |
 
+## Acesso
+
+| Código | Regra | Origem |
+| --- | --- | --- |
+| RN-AC-01 | Toda tela exige usuário autenticado. Sem sessão, o pedido é levado à tela de login. | Kairos |
+| RN-AC-02 | Login com usuário e senha, os dois obrigatórios. Usuário inexistente e senha errada recebem a mesma mensagem. | Kairos |
+| RN-AC-03 | A senha é guardada só como resultado do PBKDF2 com sal, nunca em texto puro. | Kairos |
+| RN-AC-04 | Sair encerra a sessão. | Kairos |
+
 ## Testes automatizados
 
 Rodam sem banco, com `./mvnw test`.
@@ -54,11 +63,16 @@ Rodam sem banco, com `./mvnw test`.
 | RN-CO-05 | `PeriodoTest`, `ConversoresTest` |
 | RN-RE-02, RN-RE-03 | `RelatorioBusinessTest` |
 | RN-RE-04 (Excel) | `PlanilhaDeCompromissosTest` |
+| RN-AC-01 | `AutenticacaoInterceptorTest` |
+| RN-AC-02 | `AutenticacaoBusinessTest` |
+| RN-AC-03 | `SenhaTest` |
 
 ## Além do enunciado
+
+O login (RN-AC-01 a RN-AC-04) não é pedido pelo enunciado.
 
 A consulta de compromissos mostra também um calendário do mês, com os mesmos registros da tabela. É só outra forma de ver a consulta (RN-CO-01): não cria regra nova. A montagem da grade tem teste em `CalendarioMensalTest`.
 
 ## Fora do escopo
 
-O enunciado não pede e o projeto não faz, por enquanto: login, conflito de horário entre compromissos, web service SOAP.
+O enunciado não pede e o projeto não faz, por enquanto: cadastro de usuários pela tela, conflito de horário entre compromissos, web service SOAP.
