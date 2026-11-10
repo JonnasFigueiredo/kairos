@@ -1,5 +1,6 @@
 package br.com.kairos.business;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -71,6 +72,11 @@ public class CompromissoBusiness {
 	public void excluir(Long codigo) {
 		if (codigo == null || dao.excluir(codigo) == 0)
 			throw new BusinessException("Compromisso não encontrado.");
+	}
+
+	/** Usado pelo relatório (RN-RE-01). */
+	public List<CompromissoVo> listarDoPeriodo(LocalDate dataInicial, LocalDate dataFinal) {
+		return dao.listarPorPeriodo(dataInicial, dataFinal);
 	}
 
 	/** Usado pelo cadastro de agendas (RN-AG-04). */

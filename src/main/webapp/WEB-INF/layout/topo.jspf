@@ -32,8 +32,9 @@
 					<a class="k-item <s:if test="#menuAtivo == 'compromissos'">active</s:if>" href="<s:url action='listarCompromissos'/>">
 						<s:text name="menu.compromissos"/>
 					</a>
-					<%-- O item abaixo vira link quando o relatório ficar pronto --%>
-					<span class="k-item k-item-inativo"><s:text name="menu.relatorio"/></span>
+					<a class="k-item <s:if test="#menuAtivo == 'relatorio'">active</s:if>" href="<s:url action='abrirRelatorio'/>">
+						<s:text name="menu.relatorio"/>
+					</a>
 				</div>
 			</nav>
 

@@ -144,6 +144,25 @@ public class CompromissoDao extends Dao {
 		}
 	}
 
+	/** RN-RE-01: compromissos com data entre as duas datas, incluindo as duas. */
+	public List<CompromissoVo> listarPorPeriodo(LocalDate dataInicial, LocalDate dataFinal) {
+		String sql = COLUNAS + " WHERE c.dt_compromisso BETWEEN ? AND ?" + ORDEM;
+
+		try (Connection conexao = abrirConexao();
+				PreparedStatement comando = conexao.prepareStatement(sql)) {
+
+			comando.setObject(1, dataInicial);
+			comando.setObject(2, dataFinal);
+
+			try (ResultSet resultado = comando.executeQuery()) {
+				return montarLista(resultado);
+			}
+
+		} catch (SQLException e) {
+			throw new TechnicalException("Erro ao listar os compromissos do período", e);
+		}
+	}
+
 	/** Quantos compromissos uma agenda tem (RN-AG-04). */
 	public int contarPorAgenda(Long codigoAgenda) {
 		String sql = "SELECT COUNT(*) FROM compromisso WHERE cd_agenda = ?";

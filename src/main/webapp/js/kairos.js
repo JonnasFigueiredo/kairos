@@ -12,3 +12,8 @@ document.addEventListener('show.bs.modal', function (evento) {
 	// textContent trata o nome como texto puro, nunca como HTML
 	if (textoNome) textoNome.textContent = botao.getAttribute('data-nome');
 });
+
+// Botão de imprimir do relatório: abre a impressão do navegador.
+document.addEventListener('click', function (evento) {
+	if (evento.target.closest('[data-imprimir]')) window.print();
+});

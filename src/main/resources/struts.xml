@@ -72,6 +72,19 @@
 			<allowed-methods>listar,novo,editar,salvar,excluir</allowed-methods>
 		</action>
 
+		<action name="*Relatorio" class="br.com.kairos.action.RelatorioAction" method="{1}">
+			<result name="success">/relatorio/relCompromissos.jsp</result>
+			<!-- Data inválida no filtro: o Struts devolve "input" antes de chamar a Action -->
+			<result name="input">/relatorio/relCompromissos.jsp</result>
+			<!-- Em vez de uma página, devolve um arquivo: lê getArquivo() e getNomeDoArquivo() da Action -->
+			<result name="excel" type="stream">
+				<param name="contentType">application/vnd.openxmlformats-officedocument.spreadsheetml.sheet</param>
+				<param name="inputName">arquivo</param>
+				<param name="contentDisposition">attachment;filename="${nomeDoArquivo}"</param>
+			</result>
+			<allowed-methods>abrir,gerar,excel</allowed-methods>
+		</action>
+
 	</package>
 
 </struts>

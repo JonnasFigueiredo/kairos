@@ -96,3 +96,18 @@ a.k-item:hover { background: var(--k-hover); color: var(--k-texto); }
 /* Ícone do calendário e do relógio nos campos de data e hora: claro no tema escuro */
 input[type="date"]::-webkit-calendar-picker-indicator,
 input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(1); }
+
+/* Filtros do relatório */
+.k-filtros { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; padding: 16px; }
+.k-filtros-botoes { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Impressão do relatório: só o conteúdo, em preto no branco */
+@media print {
+	:root { color-scheme: light; }
+	body { background: #fff; color: #000; }
+	.k-sidebar, .k-nao-imprimir { display: none !important; }
+	.k-conteudo { padding: 0; }
+	.k-painel { border: 0; background: #fff; }
+	.k-tabela, .k-tabela th { color: #000; }
+	.k-tabela { border-color: #999; }
+}
