@@ -45,6 +45,10 @@
 	<session-config>
 		<session-timeout>30</session-timeout>
 		<!-- Sessão só por cookie: sem ";jsessionid=..." nos links -->
+		<cookie-config>
+			<!-- JavaScript da página não lê o cookie: um XSS não leva a sessão junto -->
+			<http-only>true</http-only>
+		</cookie-config>
 		<tracking-mode>COOKIE</tracking-mode>
 	</session-config>
 </web-app>
