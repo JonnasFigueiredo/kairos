@@ -40,6 +40,8 @@ public class AgendaAction extends Action {
 			agendaVo = business.buscar(agendaVo.getCodigo());
 			return INPUT;
 		} catch (BusinessException e) {
+			// Código com letra na URL já deixou "valor inválido"; basta a mensagem abaixo
+			clearFieldErrors();
 			addActionError(e.getMessage());
 			return REDIRECT;
 		}

@@ -89,6 +89,8 @@ public class CompromissoAction extends Action implements Preparable {
 			compromissoVo = business.buscar(compromissoVo.getCodigo());
 			return INPUT;
 		} catch (BusinessException e) {
+			// Código com letra na URL já deixou "valor inválido"; basta a mensagem abaixo
+			clearFieldErrors();
 			addActionError(e.getMessage());
 			return REDIRECT;
 		}

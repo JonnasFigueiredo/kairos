@@ -45,6 +45,8 @@ public class FuncionarioAction extends Action {
 			funcionarioVo = business.buscar(funcionarioVo.getCodigo());
 			return INPUT;
 		} catch (BusinessException e) {
+			// Código com letra na URL já deixou "valor inválido"; basta a mensagem abaixo
+			clearFieldErrors();
 			addActionError(e.getMessage());
 			return REDIRECT;
 		}
