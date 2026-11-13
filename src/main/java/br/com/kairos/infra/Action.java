@@ -1,5 +1,10 @@
 package br.com.kairos.infra;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.struts2.ServletActionContext;
 
 import com.opensymphony.xwork2.ActionSupport;
@@ -20,8 +25,42 @@ public abstract class Action extends ActionSupport {
 	/**
 	 * Gravar e excluir só valem por POST. Um link, uma imagem ou o pré-carregamento
 	 * do navegador fazem GET, e GET não pode alterar dados.
+	 *
+	 * O POST também precisa vir de uma tela do próprio Kairos. Sem isso, uma página
+	 * de outro site aberta no mesmo navegador enviaria um formulário escondido e
+	 * gravaria em nome do usuário logado (CSRF).
 	 */
 	protected boolean requisicaoEhPost() {
-		return "POST".equalsIgnoreCase(ServletActionContext.getRequest().getMethod());
+		HttpServletRequest requisicao = ServletActionContext.getRequest();
+
+		return "POST".equalsIgnoreCase(requisicao.getMethod())
+				&& mesmaOrigem(requisicao.getHeader("Origin"), requisicao.getHeader("Referer"),
+						requisicao.getHeader("Host"));
+	}
+
+	/**
+	 * O navegador informa de onde veio o pedido no cabeçalho Origin e, na falta
+	 * dele, no Referer. Quando informa, o endereço precisa ser o deste servidor.
+	 * Sem nenhum dos dois não há como saber, e o pedido segue.
+	 */
+	static boolean mesmaOrigem(String origem, String referencia, String host) {
+		String informada = vazio(origem) ? referencia : origem;
+
+		if (vazio(informada))
+			return true;
+
+		if (vazio(host))
+			return false;
+
+		try {
+			String autoridade = new URI(informada.trim()).getRawAuthority();
+			return host.trim().equalsIgnoreCase(autoridade);
+		} catch (URISyntaxException e) {
+			return false;
+		}
+	}
+
+	private static boolean vazio(String texto) {
+		return texto == null || texto.trim().isEmpty();
 	}
 }
