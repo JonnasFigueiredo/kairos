@@ -55,7 +55,8 @@ public final class CalendarioMensal {
 
 	/**
 	 * Lê o mês que veio da URL, no formato aaaa-mm. Texto vazio, inválido ou
-	 * fora da faixa de anos que o banco aceita vira o mês padrão.
+	 * fora da faixa de anos aceita nas datas (a mesma do LocalDateConverter)
+	 * vira o mês padrão. Assim o calendário nunca oferece um dia que o formulário recusa.
 	 */
 	public static YearMonth mesDe(String texto, YearMonth padrao) {
 		if (texto == null || texto.trim().isEmpty())
@@ -63,7 +64,8 @@ public final class CalendarioMensal {
 
 		try {
 			YearMonth mes = YearMonth.parse(texto.trim());
-			return mes.getYear() < 1 || mes.getYear() > 9999 ? padrao : mes;
+			int ano = mes.getYear();
+			return ano < LocalDateConverter.ANO_MINIMO || ano > LocalDateConverter.ANO_MAXIMO ? padrao : mes;
 		} catch (DateTimeParseException e) {
 			return padrao;
 		}

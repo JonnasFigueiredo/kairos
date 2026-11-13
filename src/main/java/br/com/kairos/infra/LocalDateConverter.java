@@ -18,8 +18,8 @@ import com.opensymphony.xwork2.conversion.TypeConversionException;
 public class LocalDateConverter extends StrutsTypeConverter {
 
 	/** Faixa de anos que a coluna DATE do MySQL aceita. */
-	private static final int ANO_MINIMO = 1000;
-	private static final int ANO_MAXIMO = 9999;
+	static final int ANO_MINIMO = 1000;
+	static final int ANO_MAXIMO = 9999;
 
 	/** Tela → objeto. Campo vazio vira null; texto que não é data vira erro de campo. */
 	@Override

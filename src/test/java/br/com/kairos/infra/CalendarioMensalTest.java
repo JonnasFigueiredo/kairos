@@ -112,6 +112,8 @@ public class CalendarioMensalTest {
 		assertEquals(NOVEMBRO_2026, CalendarioMensal.mesDe("abc", NOVEMBRO_2026));
 		assertEquals(NOVEMBRO_2026, CalendarioMensal.mesDe("2026-13", NOVEMBRO_2026));
 		assertEquals(NOVEMBRO_2026, CalendarioMensal.mesDe("+10000-01", NOVEMBRO_2026));
+		assertEquals(NOVEMBRO_2026, CalendarioMensal.mesDe("0999-12", NOVEMBRO_2026));
+		assertEquals(YearMonth.of(1000, 1), CalendarioMensal.mesDe("1000-01", NOVEMBRO_2026));
 	}
 
 	private CompromissoVo compromisso(Long codigo, LocalDate data) {
