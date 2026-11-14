@@ -50,7 +50,8 @@
 
 		<!-- Falha técnica em qualquer Action cai na página de erro, sem detalhe interno na tela -->
 		<global-results>
-			<result name="erroTecnico">/erro/erro.jsp</result>
+			<!-- Passa pela ErroAction, que responde com HTTP 500 -->
+			<result name="erroTecnico" type="chain">erro</result>
 			<!-- Devolvido pelo interceptor de autenticação quando não há usuário na sessão -->
 			<result name="login" type="redirectAction">abrirLogin</result>
 		</global-results>
@@ -60,8 +61,8 @@
 			<exception-mapping exception="java.lang.Exception" result="erroTecnico" />
 		</global-exception-mappings>
 
-		<!-- Páginas de erro do servidor (web.xml): sem classe, só entregam o JSP -->
-		<action name="erro">
+		<!-- Páginas de erro: "erro" responde 500 (ErroAction); "naoEncontrado" só entrega o JSP -->
+		<action name="erro" class="br.com.kairos.action.ErroAction">
 			<interceptor-ref name="pilhaPublica" />
 			<result>/erro/erro.jsp</result>
 		</action>
