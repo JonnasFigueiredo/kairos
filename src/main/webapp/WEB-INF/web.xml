@@ -42,6 +42,26 @@
 		<location>/erro.action</location>
 	</error-page>
 
+	<!-- Os JSPs só abrem pelas Actions, que preparam os dados da tela. Aberto direto pela URL,
+	     o JSP quebraria; o servidor recusa (403) e mostra a página de não encontrado.
+	     O encaminhamento feito pelo Struts não passa por esta regra -->
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>jsp</web-resource-name>
+			<url-pattern>/agenda/*</url-pattern>
+			<url-pattern>/compromisso/*</url-pattern>
+			<url-pattern>/erro/*</url-pattern>
+			<url-pattern>/funcionario/*</url-pattern>
+			<url-pattern>/inicio/*</url-pattern>
+			<url-pattern>/login/*</url-pattern>
+			<url-pattern>/relatorio/*</url-pattern>
+		</web-resource-collection>
+		<auth-constraint/>
+	</security-constraint>
+	<error-page>
+		<error-code>403</error-code>
+		<location>/naoEncontrado.action</location>
+	</error-page>
 	<session-config>
 		<session-timeout>30</session-timeout>
 		<!-- Sessão só por cookie: sem ";jsessionid=..." nos links -->
