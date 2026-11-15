@@ -5,6 +5,8 @@ Gestão de funcionários, agendas e compromissos, com relatório por período em
 ## Rodar
 
 ```bash
+./subir.sh                  # banco + app, em Docker ou Podman (Windows: subir.cmd; "banco" sobe só o banco)
+./parar.sh                  # para o banco (Windows: parar.cmd; "apagar" também apaga os dados)
 docker compose up -d        # sobe o MySQL (Podman: podman compose up -d)
 ./mvnw jetty:run            # app em http://localhost:8080/kairos (Windows: mvnw.cmd)
 ./mvnw -q test              # testes das regras, sem banco

@@ -33,26 +33,39 @@ Usuários de desenvolvimento: `admin` (administra tudo) e `medica` (atende e usa
 
 ## Como rodar
 
-Pré-requisitos: **JDK 8** e **Docker** ou **Podman**. O Maven vem junto com o projeto (wrapper).
+Pré-requisitos: **JDK 8** e **Docker** ou **Podman** (com o compose). O Maven vem junto com o projeto (wrapper).
 
-```bash
-# 1. Banco de dados (MySQL 8.4 em container)
-docker compose up -d            # com Podman: podman compose up -d
+Um script sobe tudo: descobre se o Docker ou o Podman está no ar, sobe o banco, espera ele ficar pronto e sobe a aplicação.
 
-# 2. Aplicação
-./mvnw jetty:run                # no Windows: mvnw.cmd jetty:run
+```bat
+:: Windows
+set JAVA_HOME=C:\caminho\do\jdk8
+subir.cmd
 ```
 
-Abra http://localhost:8080/kairos e entre com o usuário de desenvolvimento: `admin`, senha `kairos`.
+```bash
+# Linux e Mac
+JAVA_HOME=/caminho/do/jdk8 ./subir.sh
+```
 
-- Na primeira subida o MySQL cria as tabelas e alguns dados de exemplo. Pode levar de um a quatro minutos; `docker compose ps` mostra `healthy` quando terminou.
-- O `JAVA_HOME` precisa apontar para um JDK 8.
-- Porta 8080 ocupada: `./mvnw jetty:run -Dkairos.porta=8082`.
+Abra http://localhost:8080/kairos e entre com o usuário de desenvolvimento: `admin`, senha `kairos`. Para parar: `Ctrl+C` na aplicação e `parar.cmd` (`./parar.sh`) no banco.
+
+| Para | Windows | Linux e Mac |
+| --- | --- | --- |
+| Subir só o banco | `subir.cmd banco` | `./subir.sh banco` |
+| Usar o Podman mesmo com o Docker no ar | `set MOTOR=podman` antes | `MOTOR=podman ./subir.sh` |
+| Trocar a porta da aplicação | `set PORTA=8082` antes | `PORTA=8082 ./subir.sh` |
+| Parar e apagar os dados (recria do zero) | `parar.cmd apagar` | `./parar.sh apagar` |
+
+Sem o script, são dois passos: `docker compose up -d` (ou `podman compose up -d`) e `./mvnw jetty:run` (Windows: `mvnw.cmd jetty:run`).
+
+- **Primeira subida:** baixa a imagem do MySQL, o Maven e as dependências, então precisa de internet. O MySQL ainda cria as tabelas e os dados de exemplo, o que leva de um a quatro minutos. Num computador novo, rode uma vez antes de precisar.
+- **JDK 8:** o Jetty do projeto base não roda em Java mais novo. O script recusa outro Java e mostra qual encontrou.
+- **Podman:** no Windows e no Mac o script inicia a máquina virtual do Podman se ela estiver parada. O `podman compose` precisa de um compose instalado; no Podman Desktop: Settings, Resources, Compose.
+- **Porta 3306 ocupada:** outro MySQL está no ar. Se for o Kairos no outro motor, pare-o: `set MOTOR=docker` e `parar.cmd` (ou o inverso). Também dá para mudar a porta do banco com `DB_PORT` no `.env`.
 - Banco, usuário e senha têm valores padrão de desenvolvimento. Para trocar, copie `.env.example` para `.env`.
-- Banco criado antes do atendimento e da IA (sem as tabelas `permissao`, `medico`, `resultado`, `analise_ia`): aplique `db/atualizacoes/2026-11-15_atendimento_e_ia.sql` com o banco no ar (o comando está no cabeçalho do arquivo) ou recrie com `docker compose down -v`.
+- Banco criado antes do atendimento e da IA (sem as tabelas `permissao`, `medico`, `resultado`, `analise_ia`): aplique `db/atualizacoes/2026-11-15_atendimento_e_ia.sql` com o banco no ar (o comando está no cabeçalho do arquivo; no Podman, troque `docker` por `podman`) ou recrie com `parar.cmd apagar` (`./parar.sh apagar`).
 - Assistente de IA: desligado por padrão. Para ligar, defina `KAIROS_IA_PROVEDOR` e a chave no `.env` (ver `.env.example`); `KAIROS_IA_PROVEDOR=falso` mostra o painel com uma resposta de demonstração, sem chave nem internet.
-
-Para parar: `Ctrl+C` na aplicação e `docker compose down` no banco. Os dados ficam no volume; `docker compose down -v` apaga tudo e recria do zero na próxima subida.
 
 ## Testes
 
