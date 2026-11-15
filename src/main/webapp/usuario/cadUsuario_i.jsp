@@ -72,11 +72,14 @@
 		<h2 class="h5 mb-2"><s:text name="usuario.secao.acessos"/></h2>
 		<p class="form-text mb-3"><s:text name="usuario.acessos.ajuda"/></p>
 		<div class="table-responsive mb-4">
+			<%-- Guardado antes do laço dos módulos: dentro dele, "acoes" seria a lista do próprio módulo
+			     (Modulo.getAcoes), e cada linha teria só as colunas que o módulo aceita --%>
+			<s:set var="todasAcoes" value="acoes"/>
 			<table class="table k-tabela k-matriz mb-0">
 				<thead>
 					<tr>
 						<th><s:text name="usuario.modulo"/></th>
-						<s:iterator value="acoes" var="acao">
+						<s:iterator value="#todasAcoes" var="acao">
 							<th class="text-center"><s:property value="#acao"/></th>
 						</s:iterator>
 					</tr>
@@ -88,7 +91,7 @@
 								<s:property value="#modulo.descricao"/>
 								<s:if test="#modulo.soMedico"><small class="k-suave d-block"><s:text name="usuario.so.medico"/></small></s:if>
 							</td>
-							<s:iterator value="acoes" var="acao">
+							<s:iterator value="#todasAcoes" var="acao">
 								<td class="text-center">
 									<s:if test="#modulo.aceita(#acao)">
 										<s:set var="chave" value="#modulo.chave(#acao)"/>
