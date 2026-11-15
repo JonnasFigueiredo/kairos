@@ -15,7 +15,9 @@ docker compose down -v      # para e apaga o banco
 - Exige JDK 8 no `JAVA_HOME`. Maven vem pelo wrapper; não instalar à parte.
 - Configuração do banco em `.env` (copiar de `.env.example`). `.env` nunca vai para o git.
 - Sem `.env`, o compose usa valores padrão de desenvolvimento (banco, usuário e senha `kairos`).
-- Usuário de desenvolvimento da aplicação: `admin`, senha `kairos` (criado por `db/02_dados_iniciais.sql`).
+- Usuários de desenvolvimento: `admin` (administra) e `medica` (médica: atendimento e IA), senha `kairos` (criados por `db/02_dados_iniciais.sql`).
+- Banco antigo, sem as tabelas do atendimento: aplicar `db/atualizacoes/2026-11-15_atendimento_e_ia.sql` (comando no cabeçalho). Subpastas de `db/` não rodam na subida do container.
+- Assistente de IA: `KAIROS_IA_PROVEDOR` no `.env` ou no ambiente (`falso` para demonstração sem chave). Chave de API nunca no código, no banco nem no git.
 - A primeira subida do MySQL leva de 1 a 4 minutos. Esperar o `healthy`.
 - Os scripts de `db/` rodam só com o volume vazio. Mudou a estrutura: `docker compose down -v` e subir de novo.
 - Porta 8080 ocupada: `./mvnw jetty:run -Dkairos.porta=8082`.
@@ -35,6 +37,8 @@ docker compose down -v      # para e apaga o banco
 | Log | log4j2 2.17.1 |
 | Build | Maven (war) + wrapper |
 
+O `struts2-json-plugin` (mesma versão do Struts) entrou para o assistente de IA: resultado `json` do Struts e leitura das respostas dos provedores. A chamada HTTP aos provedores é `HttpURLConnection` do Java 8, sem cliente nem SDK.
+
 Não trocar versão nem acrescentar biblioteca sem perguntar ao autor. `log4j-api` e `commons-io` têm versão fixada no `pom.xml` porque o Struts e o POI pedem versões diferentes; não remover. Nada de Spring, JPA, Lombok ou sintaxe acima do Java 8 (`var`, records, text blocks).
 
 ## Estrutura
@@ -45,7 +49,8 @@ Pacotes por camada em `src/main/java/br/com/kairos/`:
 - `business/`: regras de negócio. Lançam `BusinessException` com a mensagem que vai para a tela.
 - `dao/`: SQL com JDBC. Erro de banco vira `TechnicalException`.
 - `vo/`: objetos de dados, sem regra de negócio. Só atalhos de leitura (formatar data, achar o período pelo código).
-- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, conversores de data e hora, `PlanilhaDeCompromissos`, `CalendarioMensal`, `Senha`, `AutenticacaoInterceptor`).
+- `infra/`: classes base e de apoio (`Action`, `Conexao`, `Transacao`, `Configuracao`, `Periodo`, `Indicador`, conversores de data e hora, `PlanilhaDeCompromissos`, `CalendarioMensal`, `Senha`, `AutenticacaoInterceptor`, `AutorizacaoInterceptor`, `Modulo`, `Acao`).
+- `infra/ia/`: assistente de IA. `ModeloDeLinguagem` (interface), `ClaudeAdaptador` (API Messages), `OpenAiCompativelAdaptador` (OpenAI, Gemini, DeepSeek, Ollama), `AdaptadorFalso`, `ProvedoresIa` (configuração e reserva), `MontadorDeContexto` (pseudonimização), `Instrucoes`, `HttpJson` (`HttpURLConnection` + JSON do plugin do Struts).
 - `exception/`: `BusinessException`, `TechnicalException`.
 
 Fora do Java:
@@ -66,6 +71,8 @@ Fora do Java:
 - Quem valida é o servidor. Validação em JavaScript é só conforto.
 - Método de Action que grava ou exclui só aceita POST (`requisicaoEhPost`).
 - Toda Action passa pelo `AutenticacaoInterceptor` (pilha padrão do `struts.xml`). Só a tela de login e as páginas de erro usam a `pilhaPublica`.
+- Toda Action de módulo informa `<param name="autorizacao.modulo">` no `struts.xml`; o `AutorizacaoInterceptor` deduz a ação pelo nome do método (`Acao.exigidasPor`). Em `salvar`, a Action confere o caso exato com `podeGravar`. Módulo novo entra no enum `Modulo`.
+- Só médico (`UsuarioVo.isMedico()`) usa Atendimento e Assistente de IA; a Business confere de novo a cada gravação.
 - Senha nunca em texto puro: gravar e conferir sempre por `Senha`.
 - Lista de select que vem do banco é carregada em `prepare<Metodo>` (interface `Preparable`), nunca em getter chamado pelo JSP.
 - Parâmetro de `LIKE` é montado com `Dao.contendo`, que escapa os curingas.
