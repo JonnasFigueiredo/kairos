@@ -41,6 +41,20 @@
 			</exclusions>
 		</dependency>
 
+		<!-- JSON do próprio Struts (mesma versão): resposta JSON do assistente de IA e leitura
+		     das respostas dos provedores, sem biblioteca JSON de terceiros -->
+		<dependency>
+			<groupId>org.apache.struts</groupId>
+			<artifactId>struts2-json-plugin</artifactId>
+			<version>${struts2.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<!-- Log -->
 		<dependency>
 			<groupId>org.apache.logging.log4j</groupId>

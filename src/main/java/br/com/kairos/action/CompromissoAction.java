@@ -13,6 +13,7 @@ import br.com.kairos.business.FuncionarioBusiness;
 import br.com.kairos.exception.BusinessException;
 import br.com.kairos.infra.Action;
 import br.com.kairos.infra.CalendarioMensal;
+import br.com.kairos.infra.Modulo;
 import br.com.kairos.vo.AgendaVo;
 import br.com.kairos.vo.CompromissoVo;
 import br.com.kairos.vo.FuncionarioVo;
@@ -99,6 +100,8 @@ public class CompromissoAction extends Action implements Preparable {
 	public String salvar() {
 		if (!requisicaoEhPost())
 			return REDIRECT;
+		if (!podeGravar(Modulo.COMPROMISSOS, compromissoVo.getCodigo()))
+			return SEM_ACESSO;
 
 		try {
 			business.salvar(compromissoVo);

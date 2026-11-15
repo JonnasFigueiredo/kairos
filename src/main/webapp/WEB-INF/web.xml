@@ -49,12 +49,15 @@
 		<web-resource-collection>
 			<web-resource-name>jsp</web-resource-name>
 			<url-pattern>/agenda/*</url-pattern>
+			<url-pattern>/atendimento/*</url-pattern>
 			<url-pattern>/compromisso/*</url-pattern>
 			<url-pattern>/erro/*</url-pattern>
 			<url-pattern>/funcionario/*</url-pattern>
 			<url-pattern>/inicio/*</url-pattern>
 			<url-pattern>/login/*</url-pattern>
 			<url-pattern>/relatorio/*</url-pattern>
+			<url-pattern>/resultado/*</url-pattern>
+			<url-pattern>/usuario/*</url-pattern>
 		</web-resource-collection>
 		<auth-constraint/>
 	</security-constraint>

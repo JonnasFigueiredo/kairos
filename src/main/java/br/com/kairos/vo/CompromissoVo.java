@@ -28,6 +28,16 @@ public class CompromissoVo {
 	private String nomeFuncionario;
 	private String nomeAgenda;
 	private Integer codigoPeriodoAgenda;
+	/** Só na fila do médico (RN-AT-07): RASCUNHO, LIBERADO ou nulo quando ainda não há resultado. */
+	private String situacaoResultado;
+
+	public String getSituacaoResultado() {
+		return situacaoResultado;
+	}
+
+	public void setSituacaoResultado(String situacaoResultado) {
+		this.situacaoResultado = situacaoResultado;
+	}
 
 	public Long getCodigo() {
 		return codigo;

@@ -1,18 +1,21 @@
 package br.com.kairos.business;
 
+import br.com.kairos.dao.MedicoDao;
+import br.com.kairos.dao.PermissaoDao;
 import br.com.kairos.dao.UsuarioDao;
 import br.com.kairos.exception.BusinessException;
 import br.com.kairos.infra.Senha;
 import br.com.kairos.vo.UsuarioVo;
 
 /**
- * Regras do login: confere usuário e senha.
+ * Regras do login: confere usuário e senha e monta o usuário da sessão,
+ * com as permissões e, se houver, os dados de médico.
  */
 public class AutenticacaoBusiness {
 
 	/**
-	 * RN-AC-02: a mesma mensagem para login inexistente e para senha errada.
-	 * Mensagens diferentes contariam a um estranho quais logins existem.
+	 * RN-AC-02: a mesma mensagem para login inexistente, senha errada e conta
+	 * inativa (RN-PE-06). Mensagens diferentes contariam a um estranho quais logins existem.
 	 */
 	static final String RECUSADO = "Usuário ou senha inválidos.";
 
@@ -23,18 +26,25 @@ public class AutenticacaoBusiness {
 	private static final String SENHA_DE_NINGUEM = Senha.gerar("login inexistente");
 
 	private final UsuarioDao dao = new UsuarioDao();
+	private final PermissaoDao permissaoDao = new PermissaoDao();
+	private final MedicoDao medicoDao = new MedicoDao();
 
-	/** Devolve o usuário, sem a senha, pronto para ir para a sessão. */
+	/**
+	 * Devolve o usuário, sem a senha, pronto para ir para a sessão.
+	 * As permissões valem até o próximo login (RN-PE-05).
+	 */
 	public UsuarioVo autenticar(String login, String senha) {
 		validar(login, senha);
 
 		UsuarioVo usuario = dao.buscarPorLogin(login.trim());
 		boolean senhaConfere = Senha.confere(senha, usuario == null ? SENHA_DE_NINGUEM : usuario.getSenha());
 
-		if (usuario == null || !senhaConfere)
+		if (usuario == null || !senhaConfere || !usuario.isAtivo())
 			throw new BusinessException(RECUSADO);
 
 		usuario.setSenha(null);
+		usuario.setPermissoes(permissaoDao.listarPorUsuario(usuario.getCodigo()));
+		usuario.setMedico(medicoDao.buscarPorUsuario(usuario.getCodigo()));
 		return usuario;
 	}
 

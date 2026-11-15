@@ -6,6 +6,7 @@ import java.util.List;
 import br.com.kairos.business.FuncionarioBusiness;
 import br.com.kairos.exception.BusinessException;
 import br.com.kairos.infra.Action;
+import br.com.kairos.infra.Modulo;
 import br.com.kairos.vo.FuncionarioVo;
 
 /**
@@ -56,6 +57,8 @@ public class FuncionarioAction extends Action {
 	public String salvar() {
 		if (!requisicaoEhPost())
 			return REDIRECT;
+		if (!podeGravar(Modulo.FUNCIONARIOS, funcionarioVo.getCodigo()))
+			return SEM_ACESSO;
 
 		try {
 			business.salvar(funcionarioVo);

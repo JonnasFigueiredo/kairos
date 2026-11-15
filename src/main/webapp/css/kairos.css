@@ -97,6 +97,34 @@ a.k-item:hover { background: var(--k-hover); color: var(--k-texto); }
 .modal-header, .modal-footer { border-color: var(--k-borda); }
 .alert-success { background: #0f2a1d; border-color: #14532d; color: #86efac; }
 .alert-danger { background: #2a1010; border-color: #7f1d1d; color: #fca5a5; }
+.alert-warning { background: #2a2210; border-color: #7a5a12; color: #fcd34d; }
+.alert-info { background: #0f1f2a; border-color: #1e4a66; color: #93c5fd; }
+
+/* Usuários e acessos */
+.k-formulario-largo { max-width: 920px; }
+.k-usuario-crm { display: block; font-size: .75rem; color: var(--k-suave); }
+.k-suave { color: var(--k-suave); }
+.badge.k-badge-ativo { background: #14532d; color: #86efac; }
+.badge.k-badge-inativo { background: #3f3f46; color: #e4e4e7; }
+.k-matriz td, .k-matriz th { padding: 8px 12px; }
+.k-matriz .form-check-input { width: 1.15em; height: 1.15em; margin: 0; cursor: pointer; }
+.k-matriz [data-so-medico].k-desligado { opacity: .5; }
+.k-matriz [data-so-medico].k-desligado .form-check-input { pointer-events: none; }
+[data-medico-campos].k-oculto { display: none; }
+
+/* Atendimento e resultados */
+.badge.k-badge-rascunho { background: #4a3a10; color: #fcd34d; }
+.k-detalhe dt { color: var(--k-suave); font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-top: 12px; }
+.k-detalhe dd { margin-bottom: 0; }
+.k-texto-longo { white-space: pre-wrap; overflow-wrap: anywhere; }
+.k-versao, .k-historico-item { padding: 10px 0; border-top: 1px solid var(--k-borda); }
+.k-versao:first-of-type, .k-historico-item:first-of-type { border-top: 0; padding-top: 0; }
+textarea.form-control { resize: vertical; }
+
+/* Assistente de IA */
+.k-ia { border-color: #4c2a73; background: linear-gradient(180deg, #1b1424, var(--k-superficie) 60%); }
+.k-ia .k-detalhe dt { color: var(--k-primaria); }
+.k-ia .btn:disabled { opacity: .7; }
 
 @media (max-width: 575.98px) {
 	.k-tabela th, .k-tabela td { padding: 10px 8px; }

@@ -1,0 +1,40 @@
+<%-- Painel do assistente de IA (RN-IA), incluído na tela do atendimento.
+     O botão chama analisarIa.action por fetch (kairos.js) e desenha as seções da resposta.
+     Os textos ficam em atributos data-* para o JavaScript não ter texto solto. --%>
+<div class="k-painel p-3 mb-3 k-ia" id="painelIa"
+	data-url="<s:url action='analisarIa'/>"
+	data-compromisso="<s:property value='codigoCompromisso'/>"
+	data-texto-analisando="<s:text name='ia.analisando'/>"
+	data-texto-erro="<s:text name='ia.erro.generico'/>"
+	data-texto-nao-estruturada="<s:text name='ia.nao.estruturada'/>">
+	<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+		<h2 class="h5 mb-0"><s:text name="ia.titulo"/></h2>
+		<button type="button" class="btn k-btn btn-sm" data-ia-analisar><s:text name="ia.analisar"/></button>
+	</div>
+	<p class="k-suave small mb-2"><s:text name="ia.ajuda"/></p>
+
+	<div class="alert alert-danger d-none mb-2" role="alert" data-ia-erro></div>
+	<p class="k-suave small d-none mb-2" data-ia-aviso><s:text name="ia.nao.estruturada"/></p>
+
+	<div class="d-none" data-ia-resposta>
+		<dl class="k-detalhe mb-2">
+			<dt><s:text name="ia.resumo"/></dt>
+			<dd class="k-texto-longo" data-ia-campo="resumo"></dd>
+			<dt><s:text name="ia.comparacao"/></dt>
+			<dd class="k-texto-longo" data-ia-campo="comparacaoComAnteriores"></dd>
+			<dt><s:text name="ia.pontos"/></dt>
+			<dd><ul class="mb-0 ps-3" data-ia-lista="pontosDeAtencao"></ul></dd>
+			<dt><s:text name="ia.sugestao"/></dt>
+			<dd>
+				<p class="k-texto-longo mb-2" data-ia-campo="sugestaoDeParecer"></p>
+				<%-- RN-IA-03: nada é salvo sozinho; copia para o campo, que continua editável --%>
+				<button type="button" class="btn btn-outline-secondary btn-sm" data-ia-usar-sugestao><s:text name="ia.usar.sugestao"/></button>
+			</dd>
+			<dt><s:text name="ia.faltantes"/></dt>
+			<dd><ul class="mb-0 ps-3" data-ia-lista="dadosFaltantes"></ul></dd>
+			<dt><s:text name="ia.limitacoes"/></dt>
+			<dd class="k-texto-longo" data-ia-campo="limitacoes"></dd>
+		</dl>
+		<p class="k-suave small mb-0"><s:text name="ia.provedor"/> <span data-ia-campo="provedor"></span></p>
+	</div>
+</div>

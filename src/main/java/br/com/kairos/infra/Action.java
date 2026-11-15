@@ -3,11 +3,16 @@ package br.com.kairos.infra;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts2.ServletActionContext;
 
+import com.opensymphony.xwork2.ActionContext;
 import com.opensymphony.xwork2.ActionSupport;
+
+import br.com.kairos.vo.UsuarioVo;
 
 /**
  * Classe base das Actions do projeto.
@@ -21,6 +26,23 @@ public abstract class Action extends ActionSupport {
 	private static final long serialVersionUID = 1L;
 
 	public static final String REDIRECT = "redirect";
+	/** Mesmo nome do resultado global devolvido pelo AutorizacaoInterceptor. */
+	public static final String SEM_ACESSO = AutorizacaoInterceptor.SEM_ACESSO;
+
+	/** Usuário da sessão. Nunca é nulo aqui: o AutenticacaoInterceptor barrou antes quem não entrou. */
+	protected UsuarioVo usuarioLogado() {
+		Map<String, Object> sessao = ActionContext.getContext().getSession();
+		Object usuario = sessao == null ? null : sessao.get(AutenticacaoInterceptor.USUARIO);
+		return usuario instanceof UsuarioVo ? (UsuarioVo) usuario : new UsuarioVo();
+	}
+
+	/**
+	 * O interceptor libera "salvar" para quem inclui ou altera. Aqui a Action
+	 * confere o caso exato: código nulo é inclusão, preenchido é alteração (RN-PE-02).
+	 */
+	protected boolean podeGravar(Modulo modulo, Long codigo) {
+		return usuarioLogado().pode(modulo, codigo == null ? Acao.INCLUIR : Acao.ALTERAR);
+	}
 
 	/**
 	 * Gravar e excluir só valem por POST. Um link, uma imagem ou o pré-carregamento

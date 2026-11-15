@@ -12,4 +12,9 @@ public class TechnicalException extends RuntimeException {
 	public TechnicalException(String mensagem, Throwable causa) {
 		super(mensagem, causa);
 	}
+
+	/** Sem causa: erro de configuração detectado pelo próprio sistema. */
+	public TechnicalException(String mensagem) {
+		super(mensagem);
+	}
 }

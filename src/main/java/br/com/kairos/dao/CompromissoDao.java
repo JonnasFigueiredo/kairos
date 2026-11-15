@@ -65,18 +65,16 @@ public class CompromissoDao extends Dao {
 		}
 	}
 
-	/** Devolve quantas linhas foram excluídas: 0 se o código não existe. */
-	public int excluir(Long codigo) {
+	/**
+	 * Participa de transação: usa a conexão recebida e não a fecha (RN-AT-05).
+	 * Devolve quantas linhas foram excluídas: 0 se o código não existe.
+	 */
+	public int excluir(Connection conexao, Long codigo) throws SQLException {
 		String sql = "DELETE FROM compromisso WHERE cd_compromisso = ?";
 
-		try (Connection conexao = abrirConexao();
-				PreparedStatement comando = conexao.prepareStatement(sql)) {
-
+		try (PreparedStatement comando = conexao.prepareStatement(sql)) {
 			comando.setLong(1, codigo);
 			return comando.executeUpdate();
-
-		} catch (SQLException e) {
-			throw new TechnicalException("Erro ao excluir compromisso", e);
 		}
 	}
 

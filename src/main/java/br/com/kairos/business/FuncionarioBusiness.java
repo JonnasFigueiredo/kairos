@@ -3,8 +3,10 @@ package br.com.kairos.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.kairos.dao.AnaliseIaDao;
 import br.com.kairos.dao.CompromissoDao;
 import br.com.kairos.dao.FuncionarioDao;
+import br.com.kairos.dao.ResultadoDao;
 import br.com.kairos.exception.BusinessException;
 import br.com.kairos.infra.Transacao;
 import br.com.kairos.vo.FuncionarioVo;
@@ -18,6 +20,8 @@ public class FuncionarioBusiness {
 
 	private final FuncionarioDao dao = new FuncionarioDao();
 	private final CompromissoDao compromissoDao = new CompromissoDao();
+	private final ResultadoDao resultadoDao = new ResultadoDao();
+	private final AnaliseIaDao analiseIaDao = new AnaliseIaDao();
 
 	/**
 	 * Pesquisa em um campo só: vazio traz todos, número procura pelo código,
@@ -72,7 +76,10 @@ public class FuncionarioBusiness {
 			throw new BusinessException("Funcionário não encontrado.");
 
 		Transacao.executar(conexao -> {
-			// Primeiro os compromissos: a chave estrangeira impede excluir o funcionário antes
+			// Primeiro os resultados dos compromissos (RN-AT-05), depois os compromissos:
+			// as chaves estrangeiras impedem excluir o funcionário antes
+			analiseIaDao.excluirPorFuncionario(conexao, codigo);
+			resultadoDao.excluirPorFuncionario(conexao, codigo);
 			compromissoDao.excluirPorFuncionario(conexao, codigo);
 
 			if (dao.excluir(conexao, codigo) == 0)

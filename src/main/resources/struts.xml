@@ -18,11 +18,14 @@
 	<!-- O Struts não intercepta os arquivos do Bootstrap -->
 	<constant name="struts.action.excludePattern" value="/webjars/.*" />
 
-	<package name="kairos" extends="struts-default">
+	<!-- json-default = struts-default + o tipo de resultado "json" (plugin), usado pelo assistente de IA -->
+	<package name="kairos" extends="json-default">
 
 		<interceptors>
 			<!-- RN-AC-01: só deixa passar quem tem usuário na sessão -->
 			<interceptor name="autenticacao" class="br.com.kairos.infra.AutenticacaoInterceptor" />
+			<!-- RN-PE-02: confere a permissão do usuário no módulo da Action (parâmetro "modulo") -->
+			<interceptor name="autorizacao" class="br.com.kairos.infra.AutorizacaoInterceptor" />
 
 			<!-- Pilha padrão do Struts, com um ajuste: toda exceção não tratada vai para o log.
 			     Sem login: usada só pela tela de login e pelas páginas de erro -->
@@ -35,14 +38,17 @@
 					<param name="exception.logEnabled">true</param>
 					<param name="exception.logLevel">ERROR</param>
 					<!-- Estes métodos nunca voltam sozinhos ao formulário. Em "listar", o erro trazido de um redirect aparece na consulta;
-					     em "editar" e "excluir", código inválido na URL é tratado pela Action e volta à consulta -->
-					<param name="workflow.excludeMethods">input,back,cancel,browse,listar,editar,excluir</param>
+					     em "editar", "excluir", "abrir" e "ver", código inválido na URL é tratado pela Action e volta à consulta;
+					     em "analisar", a Action responde o erro em JSON, que é o que a tela do atendimento espera -->
+					<param name="workflow.excludeMethods">input,back,cancel,browse,listar,editar,excluir,fila,abrir,ver,analisar</param>
 				</interceptor-ref>
 			</interceptor-stack>
 
-			<!-- A mesma pilha, com o porteiro na frente. É a padrão: Action nova já nasce protegida -->
+			<!-- A mesma pilha, com os dois porteiros na frente. É a padrão: Action nova já nasce protegida.
+			     Cada Action informa o módulo com <param name="autorizacao.modulo">; sem módulo, basta estar logado -->
 			<interceptor-stack name="pilhaKairos">
 				<interceptor-ref name="autenticacao" />
+				<interceptor-ref name="autorizacao" />
 				<interceptor-ref name="pilhaPublica" />
 			</interceptor-stack>
 		</interceptors>
@@ -54,6 +60,8 @@
 			<result name="erroTecnico" type="chain">erro</result>
 			<!-- Devolvido pelo interceptor de autenticação quando não há usuário na sessão -->
 			<result name="login" type="redirectAction">abrirLogin</result>
+			<!-- Devolvido pelo interceptor de autorização; a SemAcessoAction responde HTTP 403 -->
+			<result name="semAcesso" type="chain">semAcesso</result>
 		</global-results>
 		<global-exception-mappings>
 			<exception-mapping exception="br.com.kairos.exception.TechnicalException" result="erroTecnico" />
@@ -69,6 +77,10 @@
 		<action name="naoEncontrado">
 			<interceptor-ref name="pilhaPublica" />
 			<result>/erro/naoEncontrado.jsp</result>
+		</action>
+		<action name="semAcesso" class="br.com.kairos.action.SemAcessoAction">
+			<interceptor-ref name="pilhaPublica" />
+			<result>/erro/semAcesso.jsp</result>
 		</action>
 
 		<!-- Login: abrirLogin, entrarLogin e sairLogin. Fora do porteiro, senão ninguém conseguiria entrar -->
@@ -86,6 +98,9 @@
 
 		<!-- {1} é o trecho da URL antes de "Funcionarios": listarFuncionarios.action chama o método listar -->
 		<action name="*Funcionarios" class="br.com.kairos.action.FuncionarioAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">FUNCIONARIOS</param>
+			</interceptor-ref>
 			<result name="success">/funcionario/cadFuncionario_b.jsp</result>
 			<result name="input">/funcionario/cadFuncionario_i.jsp</result>
 			<result name="redirect" type="redirectAction">listarFuncionarios</result>
@@ -94,6 +109,9 @@
 		</action>
 
 		<action name="*Agendas" class="br.com.kairos.action.AgendaAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">AGENDAS</param>
+			</interceptor-ref>
 			<result name="success">/agenda/cadAgenda_b.jsp</result>
 			<result name="input">/agenda/cadAgenda_i.jsp</result>
 			<result name="redirect" type="redirectAction">listarAgendas</result>
@@ -101,6 +119,9 @@
 		</action>
 
 		<action name="*Compromissos" class="br.com.kairos.action.CompromissoAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">COMPROMISSOS</param>
+			</interceptor-ref>
 			<result name="success">/compromisso/cadCompromisso_b.jsp</result>
 			<result name="input">/compromisso/cadCompromisso_i.jsp</result>
 			<result name="redirect" type="redirectAction">listarCompromissos</result>
@@ -108,6 +129,9 @@
 		</action>
 
 		<action name="*Relatorio" class="br.com.kairos.action.RelatorioAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">RELATORIO</param>
+			</interceptor-ref>
 			<result name="success">/relatorio/relCompromissos.jsp</result>
 			<!-- Data inválida no filtro: o Struts devolve "input" antes de chamar a Action -->
 			<result name="input">/relatorio/relCompromissos.jsp</result>
@@ -118,6 +142,59 @@
 				<param name="contentDisposition">attachment;filename="${nomeDoArquivo}"</param>
 			</result>
 			<allowed-methods>abrir,gerar,excel</allowed-methods>
+		</action>
+
+		<!-- Atendimento do médico (RN-AT): fila, tela do atendimento, rascunho, liberação e retificação -->
+		<action name="*Atendimento" class="br.com.kairos.action.AtendimentoAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">ATENDIMENTO</param>
+			</interceptor-ref>
+			<result name="success">/atendimento/fila.jsp</result>
+			<result name="atendimento">/atendimento/atendimento.jsp</result>
+			<!-- Erro de conversão (código do compromisso inválido): sem compromisso não há tela a mostrar -->
+			<result name="input" type="redirectAction">filaAtendimento</result>
+			<result name="redirect" type="redirectAction">filaAtendimento</result>
+			<!-- Depois de gravar, volta à mesma tela do atendimento -->
+			<result name="reabrir" type="redirectAction">
+				<param name="actionName">abrirAtendimento</param>
+				<param name="codigoCompromisso">${codigoCompromisso}</param>
+			</result>
+			<allowed-methods>fila,abrir,salvar,liberar,retificar</allowed-methods>
+		</action>
+
+		<!-- Assistente de IA (RN-IA): chamado por fetch da tela do atendimento, responde JSON -->
+		<action name="analisarIa" class="br.com.kairos.action.AnaliseIaAction" method="analisar">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">ASSISTENTE_IA</param>
+			</interceptor-ref>
+			<!-- Serializa só o objeto "analise" da Action, não a Action inteira -->
+			<result name="success" type="json">
+				<param name="root">analise</param>
+				<param name="excludeNullProperties">false</param>
+			</result>
+			<allowed-methods>analisar</allowed-methods>
+		</action>
+
+		<!-- Leitura dos resultados liberados (RN-AT-06) -->
+		<action name="*Resultados" class="br.com.kairos.action.ResultadoAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">RESULTADOS</param>
+			</interceptor-ref>
+			<result name="success">/resultado/cadResultado_b.jsp</result>
+			<result name="ver">/resultado/verResultado.jsp</result>
+			<result name="redirect" type="redirectAction">listarResultados</result>
+			<allowed-methods>listar,ver</allowed-methods>
+		</action>
+
+		<!-- Usuários e acessos (RN-PE). Sem "excluir": conta não se exclui, só se desativa -->
+		<action name="*Usuarios" class="br.com.kairos.action.UsuarioAction" method="{1}">
+			<interceptor-ref name="pilhaKairos">
+				<param name="autorizacao.modulo">ACESSOS</param>
+			</interceptor-ref>
+			<result name="success">/usuario/cadUsuario_b.jsp</result>
+			<result name="input">/usuario/cadUsuario_i.jsp</result>
+			<result name="redirect" type="redirectAction">listarUsuarios</result>
+			<allowed-methods>listar,novo,editar,salvar</allowed-methods>
 		</action>
 
 	</package>

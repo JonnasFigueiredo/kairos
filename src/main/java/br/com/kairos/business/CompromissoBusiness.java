@@ -5,9 +5,12 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.kairos.dao.AnaliseIaDao;
 import br.com.kairos.dao.CompromissoDao;
+import br.com.kairos.dao.ResultadoDao;
 import br.com.kairos.exception.BusinessException;
 import br.com.kairos.infra.Periodo;
+import br.com.kairos.infra.Transacao;
 import br.com.kairos.vo.AgendaVo;
 import br.com.kairos.vo.CompromissoVo;
 
@@ -17,6 +20,9 @@ import br.com.kairos.vo.CompromissoVo;
 public class CompromissoBusiness {
 
 	private final CompromissoDao dao = new CompromissoDao();
+	/** Só dentro da transação de exclusão (RN-AT-05); o resto passa pela AtendimentoBusiness. */
+	private final ResultadoDao resultadoDao = new ResultadoDao();
+	private final AnaliseIaDao analiseIaDao = new AnaliseIaDao();
 	private final FuncionarioBusiness funcionarioBusiness = new FuncionarioBusiness();
 	private final AgendaBusiness agendaBusiness = new AgendaBusiness();
 
@@ -65,13 +71,38 @@ public class CompromissoBusiness {
 			return;
 		}
 
+		// RN-AT-04: o resultado foi lançado para este funcionário, nesta agenda e nesta data
+		if (atendimento().temResultado(compromisso.getCodigo()))
+			throw new BusinessException("Compromisso com resultado não pode ser alterado.");
+
 		if (dao.alterar(compromisso) == 0)
 			throw new BusinessException("Compromisso não encontrado.");
 	}
 
+	/**
+	 * RN-AT-05: excluir o compromisso apaga também o resultado e as versões dele,
+	 * na mesma transação.
+	 */
 	public void excluir(Long codigo) {
-		if (codigo == null || dao.excluir(codigo) == 0)
+		if (codigo == null)
 			throw new BusinessException("Compromisso não encontrado.");
+
+		Transacao.executar(conexao -> {
+			// Primeiro as análises e o resultado: as chaves estrangeiras impedem excluir o compromisso antes
+			analiseIaDao.excluirPorCompromisso(conexao, codigo);
+			resultadoDao.excluirPorCompromisso(conexao, codigo);
+
+			if (dao.excluir(conexao, codigo) == 0)
+				throw new BusinessException("Compromisso não encontrado.");
+		});
+	}
+
+	/**
+	 * Criado só quando precisa: AtendimentoBusiness também cria um CompromissoBusiness,
+	 * e os dois se criando no construtor nunca terminariam.
+	 */
+	private AtendimentoBusiness atendimento() {
+		return new AtendimentoBusiness();
 	}
 
 	/** Usado pelo relatório (RN-RE-01). */

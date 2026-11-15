@@ -1,7 +1,9 @@
 <%-- Parte de cima de toda página: cabeçalho HTML, menu lateral e abertura do conteúdo.
      Antes de incluir, a página define:
        tituloPagina : texto do <title> e do título da tela
-       menuAtivo    : inicio, funcionarios, agendas, compromissos ou relatorio --%>
+       menuAtivo    : inicio, funcionarios, agendas, compromissos, relatorio, atendimento, resultados ou usuarios
+     Cada item do menu só aparece para quem tem a permissão de ver o módulo (RN-PE-02).
+     Esconder é conforto: quem barra de verdade é o AutorizacaoInterceptor. --%>
 <!DOCTYPE html>
 <html lang="pt-BR">
 	<head>
@@ -25,27 +27,56 @@
 						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5M9 21v-7h6v7"/></svg>
 						<s:text name="menu.inicio"/>
 					</a>
+					<s:if test="#session.usuario.pode('FUNCIONARIOS:VER')">
 					<a class="k-item <s:if test="#menuAtivo == 'funcionarios'">active</s:if>" <s:if test="#menuAtivo == 'funcionarios'">aria-current="page"</s:if> href="<s:url action='listarFuncionarios'/>">
 						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="9" cy="8" r="3"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M16 5a3 3 0 0 1 0 6M17 14a5 5 0 0 1 4 5v1"/></svg>
 						<s:text name="menu.funcionarios"/>
 					</a>
+					</s:if>
+					<s:if test="#session.usuario.pode('AGENDAS:VER')">
 					<a class="k-item <s:if test="#menuAtivo == 'agendas'">active</s:if>" <s:if test="#menuAtivo == 'agendas'">aria-current="page"</s:if> href="<s:url action='listarAgendas'/>">
 						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 14h3M8 17h5"/></svg>
 						<s:text name="menu.agendas"/>
 					</a>
+					</s:if>
+					<s:if test="#session.usuario.pode('COMPROMISSOS:VER')">
 					<a class="k-item <s:if test="#menuAtivo == 'compromissos'">active</s:if>" <s:if test="#menuAtivo == 'compromissos'">aria-current="page"</s:if> href="<s:url action='listarCompromissos'/>">
 						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4M17 3v4M3 10h18M8 16l2 2 5-5"/></svg>
 						<s:text name="menu.compromissos"/>
 					</a>
+					</s:if>
+					<s:if test="#session.usuario.pode('RELATORIO:VER')">
 					<a class="k-item <s:if test="#menuAtivo == 'relatorio'">active</s:if>" <s:if test="#menuAtivo == 'relatorio'">aria-current="page"</s:if> href="<s:url action='abrirRelatorio'/>">
 						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M5 3h10l4 4v14H5zM14 3v5h5M8 12h8M8 16h8M8 19h5"/></svg>
 						<s:text name="menu.relatorio"/>
 					</a>
+					</s:if>
+					<s:if test="#session.usuario.pode('ATENDIMENTO:VER')">
+					<a class="k-item <s:if test="#menuAtivo == 'atendimento'">active</s:if>" <s:if test="#menuAtivo == 'atendimento'">aria-current="page"</s:if> href="<s:url action='filaAtendimento'/>">
+						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4.5 12.5a7.5 7.5 0 0 0 15 0V5h-3M4.5 5h3v7.5"/><circle cx="12" cy="20" r="1.5"/><path d="M12 18.5v-3"/></svg>
+						<s:text name="menu.atendimento"/>
+					</a>
+					</s:if>
+					<s:if test="#session.usuario.pode('RESULTADOS:VER')">
+					<a class="k-item <s:if test="#menuAtivo == 'resultados'">active</s:if>" <s:if test="#menuAtivo == 'resultados'">aria-current="page"</s:if> href="<s:url action='listarResultados'/>">
+						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M9 3h6l1 2h3v16H5V5h3zM9 3v3h6V3"/><path d="M8.5 13l2.5 2.5 4.5-5"/></svg>
+						<s:text name="menu.resultados"/>
+					</a>
+					</s:if>
+					<s:if test="#session.usuario.pode('ACESSOS:VER')">
+					<a class="k-item <s:if test="#menuAtivo == 'usuarios'">active</s:if>" <s:if test="#menuAtivo == 'usuarios'">aria-current="page"</s:if> href="<s:url action='listarUsuarios'/>">
+						<svg class="k-menu-icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/><path d="M17 3.5l1 1.5M19.5 7.5l1.5.5"/></svg>
+						<s:text name="menu.usuarios"/>
+					</a>
+					</s:if>
 
 					<%-- Usuário que entrou e botão Sair. Sair altera a sessão, então vai por POST --%>
 					<s:if test="#session.usuario != null">
 						<s:form action="sairLogin" method="post" cssClass="k-usuario">
-							<span class="k-usuario-nome"><s:property value="#session.usuario.nome"/></span>
+							<span class="k-usuario-nome" title="<s:property value='#session.usuario.nome'/>">
+								<s:property value="#session.usuario.nome"/>
+								<s:if test="#session.usuario.medico"><small class="k-usuario-crm"><s:property value="#session.usuario.medico.crmFormatado"/></small></s:if>
+							</span>
 							<button type="submit" class="btn btn-sm btn-outline-secondary"><s:text name="login.sair"/></button>
 						</s:form>
 					</s:if>
