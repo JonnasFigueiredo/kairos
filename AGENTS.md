@@ -12,11 +12,13 @@ O Kairos é um sistema de gestão de funcionários, agendas e compromissos, com 
 ./parar.sh                  # para o banco; "./parar.sh apagar" apaga os dados
 ./mvnw -q test              # testes de unidade, sem banco
 ./mvnw -q compile           # só compila
+git config core.hooksPath .githooks   # uma vez por clone: testes antes de cada commit
 ```
 
 No Windows, use `subir.cmd`, `parar.cmd` e `mvnw.cmd`.
 
 - O projeto exige **JDK 8** no `JAVA_HOME`. Java mais novo não roda o Jetty da stack.
+- O hook `.githooks/pre-commit` roda os testes e recusa o commit se algum falhar. Não contorne com `--no-verify`: corrija o teste ou o código.
 - Usuários de desenvolvimento: `admin` e `medica`, senha `kairos`.
 - Antes de dar uma tarefa por concluída: `./mvnw -q test` passando e o fluxo testado na tela.
 

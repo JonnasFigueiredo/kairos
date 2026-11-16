@@ -10,3 +10,6 @@ mvnw text eol=lf
 
 # SQL roda dentro do container Linux
 *.sql text eol=lf
+
+# Hooks do git rodam no sh, mesmo no Windows
+.githooks/* text eol=lf

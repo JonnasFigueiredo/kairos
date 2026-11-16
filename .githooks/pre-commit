@@ -1,0 +1,42 @@
+#!/bin/sh
+# Roda os testes antes de cada commit e recusa o commit se algum falhar.
+# Vale para qualquer pessoa e qualquer ferramenta de IA: a verificação fica no git, não no assistente.
+#
+# Ativar uma vez por clone:   git config core.hooksPath .githooks
+# Pular em caso excepcional:  git commit --no-verify
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# O projeto exige Java 8. Se o JAVA_HOME não for 8, procura um JDK 8 instalado.
+java_e_8() {
+  "${1:+$1/bin/}java" -version 2>&1 | grep -q 'version "1\.8\.'
+}
+
+if ! java_e_8 "$JAVA_HOME"; then
+  JAVA_HOME=
+  for jdk in "$HOME/.jdks"/jdk8* "$HOME/.jdks"/*-1.8* \
+             "/c/Program Files/Eclipse Adoptium"/jdk-8* "/c/Program Files/Java"/jdk1.8* \
+             /usr/lib/jvm/*-8-* /usr/lib/jvm/*1.8* \
+             /Library/Java/JavaVirtualMachines/*-8*/Contents/Home; do
+    if java_e_8 "$jdk"; then
+      JAVA_HOME="$jdk"
+      break
+    fi
+  done
+  if [ -z "$JAVA_HOME" ]; then
+    echo "pre-commit: JDK 8 não encontrado; os testes não rodaram. Defina JAVA_HOME para um JDK 8." >&2
+    exit 1
+  fi
+  export JAVA_HOME
+fi
+
+LOG=target/pre-commit.log
+mkdir -p target
+echo "pre-commit: rodando os testes..."
+if ! ./mvnw -q -B test >"$LOG" 2>&1; then
+  # Só o que interessa: o teste que falhou e o motivo
+  grep -a -E "<<< (FAILURE|ERROR)|expected|COMPILATION ERROR|\.java:\[" "$LOG" | head -15 >&2
+  echo "pre-commit: testes falharam; commit recusado. Log completo: $LOG" >&2
+  exit 1
+fi
+echo "pre-commit: testes passaram."
