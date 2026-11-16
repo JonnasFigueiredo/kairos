@@ -1,45 +1,65 @@
 # Desenvolvimento com IA
 
-Este projeto foi construído com um assistente de IA (Claude Code) como par de programação. Este documento mostra como o uso foi organizado para que o resultado seja previsível, revisável e de autoria de quem assina.
+Este projeto foi desenvolvido com assistentes de programação com IA. Este documento explica como as instruções para esses assistentes estão organizadas, para que qualquer pessoa que assuma o projeto continue com a ferramenta que preferir e obtenha o mesmo padrão de código.
 
-## Princípios
+## O problema que a organização resolve
 
-1. **A regra vem antes do código.** `docs/requisitos.md` lista cada regra com um código `RN-*`. A IA implementa a partir dele, não de memória.
-2. **Contexto fixo e curto.** `CLAUDE.md` carrega em toda sessão: como rodar, stack, estrutura e convenções. O que é detalhe fica em `docs/` e é lido sob demanda.
-3. **Stack travada.** A IA não troca versão nem adiciona biblioteca sem autorização do autor.
-4. **Verificação a cada mudança.** Depois de cada alteração o projeto é compilado e os testes rodam. Um hook automatiza a compilação a cada arquivo Java editado e devolve o erro para a IA na hora.
-5. **Revisão independente.** Agentes só de leitura revisam o que foi escrito, com um contexto limpo, sem o viés de quem escreveu.
-6. **O autor decide.** Decisões de regra, de arquitetura e de escopo são humanas e ficam registradas. O autor lê, executa e commita cada etapa.
+Um assistente de IA não conhece o projeto. A cada sessão ele começa do zero e preenche as lacunas com suposições: escolhe uma biblioteca da moda, ignora uma regra de negócio, mistura camadas. Sem instruções escritas, o resultado depende de quem estava conduzindo a sessão e do que lembrou de dizer.
 
-## Peças
+A solução é tratar as instruções para a IA como parte do código: escritas, versionadas, revisadas e mantidas junto com o projeto.
 
-| Peça | Arquivo | Para que serve |
+## Como está organizado
+
+| Arquivo | Para quem | O que contém |
 | --- | --- | --- |
-| Memória do projeto | `CLAUDE.md` | Instruções lidas em toda sessão |
-| Requisitos | `docs/requisitos.md` | Regras `RN-*` com origem |
-| Skill | `.claude/skills/novo-modulo/` | Passo a passo de um cadastro novo nas quatro camadas |
-| Agente | `.claude/agents/revisor-de-camadas.md` | Revisa o respeito às camadas, o uso de JDBC e o tratamento de erro |
-| Agente | `.claude/agents/verificador-de-requisitos.md` | Confere cada `RN-*` contra o código e aponta o que falta |
-| Hook | `.claude/hooks/compilar-apos-edicao.sh` | Compila com Java 8 depois de cada edição em `.java`. É ligado em `.claude/settings.json` |
-| Permissões | `.claude/settings.json` (criado pelo autor em cada máquina) | Liga o hook, libera os comandos de rotina e bloqueia a leitura do `.env` |
+| [AGENTS.md](../AGENTS.md) | Qualquer assistente de IA, e pessoas | Comandos, stack, estrutura, convenções, segurança, passo a passo de tarefas, checklist de revisão e armadilhas conhecidas |
+| [docs/requisitos.md](requisitos.md) | Assistentes e pessoas | Regras de negócio numeradas (`RN-*`), com a origem de cada uma e o teste que a cobre |
+| [CLAUDE.md](../CLAUDE.md) | Claude Code | Importa o AGENTS.md e lista as automações próprias da ferramenta |
+| `.claude/` | Claude Code | Skill de cadastro novo, agentes de revisão e hook de compilação |
+| Este documento | Pessoas | Por que é assim e como manter |
 
-## Skill, agente e hook: a diferença
+O princípio é **uma fonte única com adaptadores finos**. Tudo o que vale para qualquer ferramenta fica no `AGENTS.md`. Cada ferramenta ganha, no máximo, um arquivo pequeno que aponta para ele e acrescenta o que só ela sabe fazer. Assim não há duas versões da mesma regra para ficarem diferentes.
 
-- **Skill** é um procedimento. A IA carrega quando a tarefa pede e segue os passos. Garante que todo cadastro saia no mesmo padrão.
-- **Agente** é um revisor com contexto próprio e ferramentas restritas (só leitura). Recebe uma pergunta, devolve um relatório.
-- **Hook** é um comando que o próprio ambiente executa, sem depender da IA lembrar. Serve para o que tem de acontecer sempre.
+## Usando com outras ferramentas
 
-## Ciclo de uma etapa
+O `AGENTS.md` é um formato aberto, adotado por várias ferramentas.
 
-1. Ler as regras `RN-*` da etapa em `docs/requisitos.md`.
-2. Seguir a skill `novo-modulo`, uma classe por vez.
-3. O hook compila a cada edição.
-4. Rodar e testar o fluxo na tela.
-5. Pedir os dois agentes de revisão e corrigir os achados.
-6. Autor revisa o diff e commita, citando as `RN-*` atendidas.
+| Ferramenta | Como lê as instruções |
+| --- | --- |
+| Codex, Cursor, GitHub Copilot | Leem o `AGENTS.md` da raiz diretamente |
+| Claude Code | Lê o `CLAUDE.md`, que importa o `AGENTS.md` com a linha `@AGENTS.md` |
+| Gemini CLI | Configure o arquivo de contexto no `.gemini/settings.json`: `{"context": {"fileName": "AGENTS.md"}}` |
+| Outras | Crie o arquivo que a ferramenta espera com uma linha apontando para o `AGENTS.md` |
+
+O suporte de cada ferramenta muda com as versões. Confira a documentação dela antes de criar um arquivo novo.
+
+## O que torna as instruções úteis
+
+1. **Comandos exatos.** "Rode `./mvnw -q test`" funciona; "rode os testes" deixa a IA adivinhar.
+2. **Limites explícitos.** A stack fixa e o que nunca fazer (trocar biblioteca, tocar no `.env`) evitam os erros mais caros.
+3. **Regra antes do código.** As regras numeradas em `docs/requisitos.md` dão à IA o que implementar e dão a quem revisa o que conferir. O código da regra aparece no código, no teste e no commit, o que deixa tudo rastreável.
+4. **Procedimentos para tarefas repetidas.** O passo a passo de cadastro novo faz todo módulo sair igual, seja qual for a ferramenta ou a pessoa.
+5. **Checklist de revisão.** A IA revisa o próprio trabalho com os mesmos critérios de uma pessoa.
+6. **Armadilhas conhecidas.** Cada erro que a IA cometeu e que custou tempo vira uma linha no `AGENTS.md`. É a parte que mais cresce e a que mais economiza nas sessões seguintes.
+7. **Curto.** O arquivo é lido em toda sessão. O que é detalhe fica em `docs/` e é lido quando a tarefa pede.
+
+## Ciclo de uma tarefa
+
+1. A tarefa parte de uma regra em `docs/requisitos.md`. Regra nova é escrita antes do código.
+2. A IA lê o `AGENTS.md` e o código ao redor, e implementa uma camada por vez.
+3. Os testes rodam a cada mudança. No Claude Code, um hook compila depois de cada edição e devolve o erro na hora.
+4. A IA revisa com o checklist. No Claude Code, agentes só de leitura fazem essa revisão com contexto limpo.
+5. A pessoa responsável lê o diff, testa na tela e faz o commit, citando as regras atendidas.
+
+## Como manter
+
+- Mudou uma convenção, um comando ou uma regra: atualize o `AGENTS.md` ou o `docs/requisitos.md` no mesmo commit.
+- A IA errou de um jeito que vai se repetir: acrescente a armadilha no `AGENTS.md`.
+- Trate mudanças nesses arquivos como mudança de código: revisão e commit próprio.
+- Nada de segredo, dado pessoal ou configuração de máquina nesses arquivos. Eles vão para o repositório.
 
 ## Limites
 
-- A IA não tem acesso ao `.env` nem a credenciais.
-- Agentes de revisão não editam arquivos.
-- O enunciado da prova não está no repositório.
+- Os assistentes não têm acesso ao `.env` nem a credenciais.
+- Os agentes de revisão só leem; não editam arquivos.
+- Decisões de regra, de arquitetura e de escopo são da pessoa responsável pelo projeto, não da IA.

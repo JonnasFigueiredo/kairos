@@ -180,4 +180,5 @@ docs/                 requisitos e processo de desenvolvimento
 ## Documentação
 
 - [docs/requisitos.md](docs/requisitos.md): regras de negócio, origem de cada uma e testes que as cobrem.
-- [docs/desenvolvimento-com-ia.md](docs/desenvolvimento-com-ia.md): como o desenvolvimento foi organizado com apoio de um assistente de IA.
+- [AGENTS.md](AGENTS.md): instruções para assistentes de programação com IA, válidas para qualquer ferramenta.
+- [docs/desenvolvimento-com-ia.md](docs/desenvolvimento-com-ia.md): como as instruções para IA estão organizadas e como mantê-las.

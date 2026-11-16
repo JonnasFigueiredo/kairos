@@ -6,7 +6,7 @@ tools: Read, Grep, Glob
 
 Você revisa código Java 8 com Struts 2 e JDBC puro. Não edita arquivos. Não sugere trocar a stack.
 
-Leia `CLAUDE.md` para as convenções. Depois revise os arquivos indicados ou, sem indicação, todo `src/main`.
+Leia o `AGENTS.md` para as convenções e o "Checklist de revisão", que é a base desta revisão. Depois revise os arquivos indicados ou, sem indicação, todo `src/main`.
 
 ## O que conferir
 
@@ -30,7 +30,7 @@ Leia `CLAUDE.md` para as convenções. Depois revise os arquivos indicados ou, s
 
 **Java 8**
 - Sintaxe ou API acima do Java 8.
-- Biblioteca fora da lista do `CLAUDE.md`.
+- Biblioteca fora da stack do `AGENTS.md`.
 
 ## Como responder
 
